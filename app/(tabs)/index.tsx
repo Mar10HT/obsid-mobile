@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser } from '@features/auth/store';
 import { inventoryApi } from '@features/inventory/api';
@@ -14,15 +15,6 @@ const TRANSACTION_COLORS: Record<string, string> = {
   DEVOLUCION:    '#8b5cf6',
 };
 
-function timeAgo(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 60) return `Hace ${minutes} min`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `Hace ${hours}h`;
-  return `Hace ${Math.floor(hours / 24)}d`;
-}
-
 function StatCard({ label, value, color }: { label: string; value: string | number; color?: string }) {
   return (
     <View className="flex-1 bg-surface-variant rounded-xl p-4">
@@ -35,9 +27,23 @@ function StatCard({ label, value, color }: { label: string; value: string | numb
 }
 
 function ActivityRow({ tx }: { tx: Transaction }) {
+  const { t } = useTranslation();
   const dot = TRANSACTION_COLORS[tx.type] ?? '#64748b';
   const sign = tx.type === 'ENTRADA' || tx.type === 'DEVOLUCION' ? '+' : '-';
   const signColor = sign === '+' ? '#10b981' : '#ef4444';
+
+  const diff = Date.now() - new Date(tx.createdAt).getTime();
+  const minutes = Math.floor(diff / 60_000);
+  let ago: string;
+  if (minutes < 60) {
+    ago = t('dashboard.timeAgo.minutes', { count: minutes });
+  } else if (minutes < 1440) {
+    ago = t('dashboard.timeAgo.hours', { count: Math.floor(minutes / 60) });
+  } else {
+    ago = t('dashboard.timeAgo.days', { count: Math.floor(minutes / 1440) });
+  }
+
+  const typeName = t(`dashboard.txTypes.${tx.type}`, { defaultValue: tx.type });
 
   return (
     <View className="flex-row items-center justify-between bg-surface-variant rounded-xl px-4 py-3">
@@ -45,10 +51,10 @@ function ActivityRow({ tx }: { tx: Transaction }) {
         <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: dot }} />
         <View className="flex-1">
           <Text className="text-foreground font-sans-medium text-sm" numberOfLines={1}>
-            {tx.type === 'TRANSFERENCIA' ? 'Transferencia' : tx.type === 'PRESTAMO' ? 'Préstamo' : tx.type.charAt(0) + tx.type.slice(1).toLowerCase()} — {tx.itemName}
+            {typeName} — {tx.itemName}
           </Text>
           <Text className="text-on-surface-muted font-sans text-xs mt-0.5">
-            {timeAgo(tx.createdAt)} · {tx.warehouseName}
+            {ago} · {tx.warehouseName}
           </Text>
         </View>
       </View>
@@ -62,6 +68,7 @@ function ActivityRow({ tx }: { tx: Transaction }) {
 export default function DashboardScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const user = useUser();
 
   const statsQuery = useQuery({
@@ -75,12 +82,7 @@ export default function DashboardScreen() {
   });
 
   const isRefreshing = statsQuery.isFetching || activityQuery.isFetching;
-
-  const onRefresh = () => {
-    statsQuery.refetch();
-    activityQuery.refetch();
-  };
-
+  const onRefresh = () => { statsQuery.refetch(); activityQuery.refetch(); };
   const stats = statsQuery.data;
   const activity = activityQuery.data ?? [];
 
@@ -93,7 +95,7 @@ export default function DashboardScreen() {
       {/* Header */}
       <View className="flex-row items-center justify-between px-5">
         <View>
-          <Text className="text-on-surface-muted font-sans text-sm">Buenos días,</Text>
+          <Text className="text-on-surface-muted font-sans text-sm">{t('dashboard.greeting')}</Text>
           <Text className="text-foreground font-sans-bold text-2xl">{user?.name ?? '—'}</Text>
         </View>
         <View className="bg-surface-variant rounded-full px-3 py-1.5">
@@ -103,18 +105,18 @@ export default function DashboardScreen() {
 
       {/* Stats grid */}
       <View className="px-5 flex-row gap-3">
-        <StatCard label="Total Items" value={stats?.totalItems ?? '—'} />
-        <StatCard label="Stock Bajo" value={stats?.lowStockCount ?? '—'} color="#f59e0b" />
+        <StatCard label={t('dashboard.stats.totalItems')} value={stats?.totalItems ?? '—'} />
+        <StatCard label={t('dashboard.stats.lowStock')} value={stats?.lowStockCount ?? '—'} color="#f59e0b" />
       </View>
       <View className="px-5 flex-row gap-3">
-        <StatCard label="Préstamos Activos" value={stats?.activeLoans ?? '—'} color="#3b82f6" />
-        <StatCard label="Pendientes" value={stats?.pendingTransfers ?? '—'} />
+        <StatCard label={t('dashboard.stats.activeLoans')} value={stats?.activeLoans ?? '—'} color="#3b82f6" />
+        <StatCard label={t('dashboard.stats.pending')} value={stats?.pendingTransfers ?? '—'} />
       </View>
 
       {/* Quick actions */}
       <View className="px-5 gap-3">
         <Text className="text-on-surface-muted font-sans-semibold text-xs tracking-widest uppercase">
-          Acciones Rápidas
+          {t('dashboard.quickActions')}
         </Text>
         <View className="flex-row gap-3">
           <TouchableOpacity
@@ -123,7 +125,7 @@ export default function DashboardScreen() {
             onPress={() => router.push('/(tabs)/scan')}
           >
             <Text className="text-white text-2xl">⬡</Text>
-            <Text className="text-white font-sans-semibold text-xs">Escanear QR</Text>
+            <Text className="text-white font-sans-semibold text-xs">{t('dashboard.scanQr')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="flex-1 bg-surface-variant rounded-xl py-5 items-center gap-2"
@@ -131,7 +133,7 @@ export default function DashboardScreen() {
             onPress={() => router.push('/(operations)/movements/new')}
           >
             <Text className="text-on-surface-variant text-2xl">↕</Text>
-            <Text className="text-on-surface-variant font-sans-semibold text-xs">Movimiento</Text>
+            <Text className="text-on-surface-variant font-sans-semibold text-xs">{t('dashboard.movement')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="flex-1 bg-surface-variant rounded-xl py-5 items-center gap-2"
@@ -139,7 +141,7 @@ export default function DashboardScreen() {
             onPress={() => router.push('/(operations)/transfers')}
           >
             <Text className="text-on-surface-variant text-2xl">⇌</Text>
-            <Text className="text-on-surface-variant font-sans-semibold text-xs">Transferencias</Text>
+            <Text className="text-on-surface-variant font-sans-semibold text-xs">{t('dashboard.transfers')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -147,24 +149,22 @@ export default function DashboardScreen() {
       {/* Recent activity */}
       <View className="px-5 gap-3">
         <Text className="text-on-surface-muted font-sans-semibold text-xs tracking-widest uppercase">
-          Actividad Reciente
+          {t('dashboard.recentActivity')}
         </Text>
         {activityQuery.isLoading && (
           <Text className="text-on-surface-muted font-sans text-sm text-center py-4">
-            Cargando...
+            {t('common.loading')}
           </Text>
         )}
         {activityQuery.isError && (
           <Text className="text-status-error font-sans text-sm text-center py-4">
-            Error al cargar actividad
+            {t('dashboard.activityError')}
           </Text>
         )}
-        {activity.map((tx) => (
-          <ActivityRow key={tx.id} tx={tx} />
-        ))}
+        {activity.map((tx) => <ActivityRow key={tx.id} tx={tx} />)}
         {!activityQuery.isLoading && activity.length === 0 && (
           <Text className="text-on-surface-muted font-sans text-sm text-center py-4">
-            Sin actividad reciente
+            {t('dashboard.noActivity')}
           </Text>
         )}
       </View>

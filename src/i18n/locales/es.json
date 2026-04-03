@@ -1,0 +1,80 @@
+{
+  "tabs": {
+    "home": "INICIO",
+    "stock": "STOCK",
+    "operations": "OPER.",
+    "more": "MÁS"
+  },
+  "auth": {
+    "tagline": "Sistema de Inventario",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "admin@ejemplo.com",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Iniciar sesión"
+  },
+  "dashboard": {
+    "greeting": "Buenos días,",
+    "stats": {
+      "totalItems": "Total Items",
+      "lowStock": "Stock Bajo",
+      "activeLoans": "Préstamos Activos",
+      "pending": "Pendientes"
+    },
+    "quickActions": "Acciones Rápidas",
+    "scanQr": "Escanear QR",
+    "movement": "Movimiento",
+    "transfers": "Transferencias",
+    "recentActivity": "Actividad Reciente",
+    "activityError": "Error al cargar actividad",
+    "noActivity": "Sin actividad reciente",
+    "txTypes": {
+      "ENTRADA": "Entrada",
+      "SALIDA": "Salida",
+      "TRANSFERENCIA": "Transferencia",
+      "PRESTAMO": "Préstamo",
+      "DEVOLUCION": "Devolución"
+    },
+    "timeAgo": {
+      "minutes_one": "Hace {{count}} min",
+      "minutes_other": "Hace {{count}} min",
+      "hours_one": "Hace {{count}}h",
+      "hours_other": "Hace {{count}}h",
+      "days_one": "Hace {{count}}d",
+      "days_other": "Hace {{count}}d"
+    }
+  },
+  "inventory": {
+    "title": "Inventario",
+    "searchPlaceholder": "Buscar producto, SKU...",
+    "loadError": "Error al cargar inventario",
+    "empty": "Inventario vacío",
+    "noResults": "Sin resultados",
+    "loading": "Cargando...",
+    "status": {
+      "inStock": "En stock",
+      "lowStock": "Stock bajo",
+      "noStock": "Sin stock"
+    }
+  },
+  "operations": {
+    "title": "Operaciones",
+    "transfers": "Transferencias",
+    "loans": "Préstamos",
+    "movements": "Movimientos"
+  },
+  "more": {
+    "title": "Más",
+    "transfers": "Transferencias",
+    "loans": "Préstamos",
+    "movements": "Movimientos",
+    "logout": "Cerrar sesión"
+  },
+  "scan": {
+    "title": "Escanear QR",
+    "phase": "Fase 3"
+  },
+  "common": {
+    "loading": "Cargando..."
+  }
+}

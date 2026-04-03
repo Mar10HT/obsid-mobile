@@ -9,9 +9,11 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@features/auth/store';
 
 export default function LoginScreen() {
+  const { t } = useTranslation();
   const { login, isLoading, error, clearError } = useAuthStore();
 
   const [email, setEmail] = useState('');
@@ -41,7 +43,7 @@ export default function LoginScreen() {
               OBSID
             </Text>
             <Text className="text-sm font-sans text-on-surface-muted mt-1">
-              Sistema de Inventario
+              {t('auth.tagline')}
             </Text>
           </View>
 
@@ -50,11 +52,11 @@ export default function LoginScreen() {
             {/* Email */}
             <View>
               <Text className="text-xs font-sans-medium text-on-surface-variant uppercase tracking-wider mb-2">
-                Correo electrónico
+                {t('auth.emailLabel')}
               </Text>
               <TextInput
                 className="bg-surface-elevated border border-border rounded-card px-4 py-3 text-foreground font-sans text-base"
-                placeholder="admin@ejemplo.com"
+                placeholder={t('auth.emailPlaceholder')}
                 placeholderTextColor="#64748b"
                 value={email}
                 onChangeText={setEmail}
@@ -69,11 +71,11 @@ export default function LoginScreen() {
             {/* Password */}
             <View>
               <Text className="text-xs font-sans-medium text-on-surface-variant uppercase tracking-wider mb-2">
-                Contraseña
+                {t('auth.passwordLabel')}
               </Text>
               <TextInput
                 className="bg-surface-elevated border border-border rounded-card px-4 py-3 text-foreground font-sans text-base"
-                placeholder="••••••••"
+                placeholder={t('auth.passwordPlaceholder')}
                 placeholderTextColor="#64748b"
                 value={password}
                 onChangeText={setPassword}
@@ -108,7 +110,7 @@ export default function LoginScreen() {
                     isValid ? 'text-white' : 'text-on-surface-muted'
                   }`}
                 >
-                  Iniciar sesión
+                  {t('auth.submit')}
                 </Text>
               )}
             </TouchableOpacity>

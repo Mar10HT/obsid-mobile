@@ -1,14 +1,17 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
-const TABS = [
-  { name: 'index',      label: 'INICIO', icon: '⌂',   isFab: false },
-  { name: 'inventory',  label: 'STOCK',  icon: '≡',   isFab: false },
-  { name: 'scan',       label: null,     icon: 'QR',  isFab: true  },
-  { name: 'operations', label: 'OPER.',  icon: '⇌',   isFab: false },
-  { name: 'more',       label: 'MÁS',   icon: '···', isFab: false },
-] as const;
+type TabDef = { name: string; labelKey: string | null; icon: string; isFab: boolean };
+
+const TABS: TabDef[] = [
+  { name: 'index',      labelKey: 'tabs.home',       icon: '⌂',   isFab: false },
+  { name: 'inventory',  labelKey: 'tabs.stock',      icon: '≡',   isFab: false },
+  { name: 'scan',       labelKey: null,              icon: 'QR',  isFab: true  },
+  { name: 'operations', labelKey: 'tabs.operations', icon: '⇌',   isFab: false },
+  { name: 'more',       labelKey: 'tabs.more',       icon: '···', isFab: false },
+];
 
 const ACTIVE   = '#4d7c6f';
 const INACTIVE = '#475569';
@@ -16,6 +19,7 @@ const FAB_RING = '#1a2e2a';
 
 export default function TabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <View style={{ paddingBottom: insets.bottom, backgroundColor: '#0f0f0f' }}>
@@ -101,7 +105,7 @@ export default function TabBar({ state, navigation }: BottomTabBarProps) {
               <Text style={{ fontSize: tab.icon === '···' ? 16 : 20, color: tint, lineHeight: 24 }}>
                 {tab.icon}
               </Text>
-              {tab.label && (
+              {tab.labelKey && (
                 <Text
                   style={{
                     fontSize: 9,
@@ -110,7 +114,7 @@ export default function TabBar({ state, navigation }: BottomTabBarProps) {
                     letterSpacing: 1,
                   }}
                 >
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Text>
               )}
             </TouchableOpacity>

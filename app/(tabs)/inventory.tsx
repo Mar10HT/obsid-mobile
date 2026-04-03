@@ -1,23 +1,25 @@
 import { useState } from 'react';
 import { View, Text, FlatList, TextInput, TouchableOpacity, RefreshControl } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDebounce } from '@hooks/use-debounce';
 import { inventoryApi } from '@features/inventory/api';
 import type { InventoryItem } from '@features/inventory/types';
 
-function stockStatus(item: InventoryItem): { label: string; color: string; bg: string } {
+function stockStatus(item: InventoryItem, t: (key: string) => string): { label: string; color: string; bg: string } {
   if (item.quantity === 0) {
-    return { label: 'Sin stock', color: '#ef4444', bg: '#2d1515' };
+    return { label: t('inventory.status.noStock'), color: '#ef4444', bg: '#2d1515' };
   }
   if (item.quantity <= item.minStock) {
-    return { label: 'Stock bajo', color: '#f59e0b', bg: '#2d2010' };
+    return { label: t('inventory.status.lowStock'), color: '#f59e0b', bg: '#2d2010' };
   }
-  return { label: 'En stock', color: '#10b981', bg: '#0f2920' };
+  return { label: t('inventory.status.inStock'), color: '#10b981', bg: '#0f2920' };
 }
 
 function ItemRow({ item }: { item: InventoryItem }) {
-  const status = stockStatus(item);
+  const { t } = useTranslation();
+  const status = stockStatus(item, t);
 
   return (
     <View className="flex-row items-center justify-between px-4 py-3.5 border-b border-surface-variant">
@@ -45,6 +47,7 @@ function ItemRow({ item }: { item: InventoryItem }) {
 
 export default function InventoryScreen() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
 
@@ -57,14 +60,13 @@ export default function InventoryScreen() {
 
   return (
     <View className="flex-1 bg-surface" style={{ paddingTop: insets.top + 8 }}>
-      {/* Header */}
       <View className="px-5 mb-4">
-        <Text className="text-foreground font-sans-bold text-2xl mb-3">Inventario</Text>
+        <Text className="text-foreground font-sans-bold text-2xl mb-3">{t('inventory.title')}</Text>
         <View className="flex-row items-center bg-surface-variant rounded-xl px-4 gap-3">
           <Text className="text-on-surface-muted text-base">⌕</Text>
           <TextInput
             className="flex-1 py-3 text-foreground font-sans text-sm"
-            placeholder="Buscar producto, SKU..."
+            placeholder={t('inventory.searchPlaceholder')}
             placeholderTextColor="#475569"
             value={search}
             onChangeText={setSearch}
@@ -83,7 +85,7 @@ export default function InventoryScreen() {
       {isError && (
         <View className="px-5 py-3">
           <Text className="text-status-error font-sans text-sm text-center">
-            Error al cargar inventario
+            {t('inventory.loadError')}
           </Text>
         </View>
       )}
@@ -99,7 +101,7 @@ export default function InventoryScreen() {
           !isLoading ? (
             <View className="items-center py-12">
               <Text className="text-on-surface-muted font-sans text-sm">
-                {search ? 'Sin resultados' : 'Inventario vacío'}
+                {search ? t('inventory.noResults') : t('inventory.empty')}
               </Text>
             </View>
           ) : null
