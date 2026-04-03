@@ -122,6 +122,63 @@
       "close": "Close"
     }
   },
+  "loans": {
+    "title": "Loans",
+    "tabs": {
+      "PENDING": "Pending",
+      "ACTIVE": "Active",
+      "RETURN_PENDING": "To return"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "SENT": "Sent",
+      "RECEIVED": "Received",
+      "RETURN_PENDING": "To return",
+      "RETURNED": "Returned",
+      "OVERDUE": "Overdue",
+      "CANCELLED": "Cancelled"
+    },
+    "dueDate": "Due {{date}}",
+    "overdue": "Overdue",
+    "actions": {
+      "send": "Send loan",
+      "viewSendQr": "View send QR",
+      "initiateReturn": "Initiate return",
+      "viewReturnQr": "View return QR"
+    },
+    "sendSuccess": "Loan sent",
+    "returnInitiated": "Return initiated",
+    "actionError": "Failed to process action",
+    "empty": "No loans",
+    "loadError": "Failed to load loans",
+    "qrModal": {
+      "sendTitle": "Send QR",
+      "returnTitle": "Return QR",
+      "instruction": "The recipient must scan this code",
+      "close": "Close"
+    }
+  },
+  "movements": {
+    "title": "New movement",
+    "typeLabel": "Movement type",
+    "types": {
+      "IN": "Entry",
+      "OUT": "Exit"
+    },
+    "warehouseLabel": "Warehouse",
+    "warehousePlaceholder": "Select warehouse...",
+    "itemsLabel": "Items",
+    "searchItem": "Search item...",
+    "quantity": "Quantity",
+    "addItem": "Add",
+    "notesLabel": "Notes (optional)",
+    "notesPlaceholder": "Observations...",
+    "submit": "Register movement",
+    "noItems": "Add at least one item",
+    "success": "Movement registered",
+    "error": "Failed to register movement",
+    "noWarehouses": "No warehouses available"
+  },
   "common": {
     "loading": "Loading..."
   }

@@ -122,6 +122,63 @@
       "close": "Cerrar"
     }
   },
+  "loans": {
+    "title": "Préstamos",
+    "tabs": {
+      "PENDING": "Pendientes",
+      "ACTIVE": "Activos",
+      "RETURN_PENDING": "Por devolver"
+    },
+    "status": {
+      "PENDING": "Pendiente",
+      "SENT": "Enviado",
+      "RECEIVED": "Recibido",
+      "RETURN_PENDING": "Por devolver",
+      "RETURNED": "Devuelto",
+      "OVERDUE": "Vencido",
+      "CANCELLED": "Cancelado"
+    },
+    "dueDate": "Vence {{date}}",
+    "overdue": "Vencido",
+    "actions": {
+      "send": "Enviar préstamo",
+      "viewSendQr": "Ver QR de envío",
+      "initiateReturn": "Iniciar devolución",
+      "viewReturnQr": "Ver QR de devolución"
+    },
+    "sendSuccess": "Préstamo enviado",
+    "returnInitiated": "Devolución iniciada",
+    "actionError": "Error al procesar la acción",
+    "empty": "Sin préstamos",
+    "loadError": "Error al cargar préstamos",
+    "qrModal": {
+      "sendTitle": "QR de envío",
+      "returnTitle": "QR de devolución",
+      "instruction": "El destinatario debe escanear este código",
+      "close": "Cerrar"
+    }
+  },
+  "movements": {
+    "title": "Nuevo movimiento",
+    "typeLabel": "Tipo de movimiento",
+    "types": {
+      "IN": "Entrada",
+      "OUT": "Salida"
+    },
+    "warehouseLabel": "Bodega",
+    "warehousePlaceholder": "Seleccionar bodega...",
+    "itemsLabel": "Ítems",
+    "searchItem": "Buscar ítem...",
+    "quantity": "Cantidad",
+    "addItem": "Agregar",
+    "notesLabel": "Notas (opcional)",
+    "notesPlaceholder": "Observaciones...",
+    "submit": "Registrar movimiento",
+    "noItems": "Agregá al menos un ítem",
+    "success": "Movimiento registrado",
+    "error": "Error al registrar movimiento",
+    "noWarehouses": "Sin bodegas disponibles"
+  },
   "common": {
     "loading": "Cargando..."
   }
