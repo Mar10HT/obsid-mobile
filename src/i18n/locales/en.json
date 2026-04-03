@@ -87,6 +87,41 @@
     },
     "error": "Failed to process code"
   },
+  "transfers": {
+    "title": "Transfers",
+    "tabs": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "SENT": "Sent"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "SENT": "Sent",
+      "RECEIVED": "Received",
+      "COMPLETED": "Completed",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled"
+    },
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} items",
+    "actions": {
+      "approve": "Approve",
+      "send": "Mark as sent",
+      "viewQr": "View receipt QR",
+      "scanToReceive": "Scan to receive"
+    },
+    "approveSuccess": "Transfer approved",
+    "sendSuccess": "Transfer sent",
+    "actionError": "Failed to process action",
+    "empty": "No transfers",
+    "loadError": "Failed to load transfers",
+    "qrModal": {
+      "title": "Receipt QR Code",
+      "instruction": "The recipient must scan this code to confirm receipt",
+      "close": "Close"
+    }
+  },
   "common": {
     "loading": "Loading..."
   }

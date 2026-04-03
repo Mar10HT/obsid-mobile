@@ -87,6 +87,41 @@
     },
     "error": "Error al procesar el código"
   },
+  "transfers": {
+    "title": "Transferencias",
+    "tabs": {
+      "PENDING": "Pendientes",
+      "APPROVED": "Aprobadas",
+      "SENT": "Enviadas"
+    },
+    "status": {
+      "PENDING": "Pendiente",
+      "APPROVED": "Aprobada",
+      "SENT": "Enviada",
+      "RECEIVED": "Recibida",
+      "COMPLETED": "Completada",
+      "REJECTED": "Rechazada",
+      "CANCELLED": "Cancelada"
+    },
+    "items_one": "{{count}} ítem",
+    "items_other": "{{count}} ítems",
+    "actions": {
+      "approve": "Aprobar",
+      "send": "Marcar como enviada",
+      "viewQr": "Ver QR de recepción",
+      "scanToReceive": "Escanear para recibir"
+    },
+    "approveSuccess": "Transferencia aprobada",
+    "sendSuccess": "Transferencia enviada",
+    "actionError": "Error al procesar la acción",
+    "empty": "Sin transferencias",
+    "loadError": "Error al cargar transferencias",
+    "qrModal": {
+      "title": "Código QR de recepción",
+      "instruction": "El destinatario debe escanear este código para confirmar la recepción",
+      "close": "Cerrar"
+    }
+  },
   "common": {
     "loading": "Cargando..."
   }
