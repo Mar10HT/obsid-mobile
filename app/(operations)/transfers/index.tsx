@@ -15,6 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { transfersApi } from '@features/transfers/api';
 import type { TransferRequest, FilterTab } from '@features/transfers/types';
+import { usePermission } from '@hooks/use-permission';
+import { PERMISSIONS } from '@constants/permissions';
 
 // --- helpers ---
 
@@ -105,6 +107,7 @@ function TransferCard({
   isActioning: boolean;
 }) {
   const { t } = useTranslation();
+  const canManage = usePermission(PERMISSIONS.TRANSFERS_MANAGE);
   const statusStyle = STATUS_COLORS[transfer.status] ?? STATUS_COLORS.CANCELLED;
   const itemCount = transfer.items.reduce((sum, i) => sum + i.quantity, 0);
   const itemNames = transfer.items
@@ -138,7 +141,7 @@ function TransferCard({
       </View>
 
       {/* Actions */}
-      {transfer.status === 'PENDING' && (
+      {transfer.status === 'PENDING' && canManage && (
         <TouchableOpacity
           className="mx-4 mb-4 mt-1 bg-primary rounded-lg py-2.5 items-center"
           activeOpacity={0.8}
@@ -152,7 +155,7 @@ function TransferCard({
         </TouchableOpacity>
       )}
 
-      {transfer.status === 'APPROVED' && (
+      {transfer.status === 'APPROVED' && canManage && (
         <TouchableOpacity
           className="mx-4 mb-4 mt-1 bg-surface rounded-lg border border-primary py-2.5 items-center"
           activeOpacity={0.8}

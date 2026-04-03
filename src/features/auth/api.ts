@@ -35,13 +35,20 @@ export const authApi = {
       throw new Error(body.message ?? 'Credenciales incorrectas');
     }
 
-    const data: AuthTokens & { user: AuthUser } = await res.json();
+    const data: AuthTokens & { user: object } = await res.json();
     await secureStore.setTokens(data.access_token, data.refresh_token);
-    return data.user;
+    // Fetch full user profile including permissions (login response omits them)
+    return authApi.getMe();
   },
 
-  getMe: (): Promise<AuthUser> =>
-    apiFetch<AuthUser>(API_ENDPOINTS.me),
+  getMe: async (): Promise<AuthUser> => {
+    const res = await apiFetch<{
+      user: { id: string; email: string; name: string; role: string };
+      permissions: string[];
+      permissionsVersion: number;
+    }>(API_ENDPOINTS.me);
+    return { ...res.user, permissions: res.permissions, permissionsVersion: res.permissionsVersion };
+  },
 
   // Sends refresh_token in body — backend needs to support this for mobile
   logout: async (): Promise<void> => {

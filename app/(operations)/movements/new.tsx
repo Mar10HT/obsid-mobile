@@ -15,6 +15,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { movementsApi } from '@features/movements/api';
 import { inventoryApi } from '@features/inventory/api';
 import { useDebounce } from '@hooks/use-debounce';
+import { usePermission } from '@hooks/use-permission';
+import { PERMISSIONS } from '@constants/permissions';
 import type { TransactionType, MovementItem } from '@features/movements/types';
 
 // --- Item search row ---
@@ -153,7 +155,8 @@ export default function NewMovementScreen() {
     setItems((prev) => prev.filter((i) => i.inventoryItemId !== inventoryItemId));
   };
 
-  const canSubmit = !!warehouseId && items.length > 0 && !mutation.isPending;
+  const canCreate = usePermission(PERMISSIONS.TRANSACTIONS_CREATE);
+  const canSubmit = !!warehouseId && items.length > 0 && !mutation.isPending && canCreate;
 
   return (
     <ScrollView
