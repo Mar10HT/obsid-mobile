@@ -56,7 +56,7 @@ export default function InventoryScreen() {
     queryFn: () => inventoryApi.getItems({ search: debouncedSearch || undefined }),
   });
 
-  const items = data ?? [];
+  const items = data?.data ?? [];
 
   return (
     <View className="flex-1 bg-surface" style={{ paddingTop: insets.top + 8 }}>

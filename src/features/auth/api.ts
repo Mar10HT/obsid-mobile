@@ -24,6 +24,8 @@ export interface AuthUser {
 
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<AuthUser> => {
+    // Login is CSRF-exempt on the API: mobile clients call this before having
+    // a Bearer token and React Native fetch cannot access HttpOnly cookies.
     const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.login}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

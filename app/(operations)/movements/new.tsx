@@ -40,7 +40,7 @@ function ItemSearchRow({
     enabled: debouncedSearch.length > 1,
   });
 
-  const results = data ?? [];
+  const results = data?.data ?? [];
 
   return (
     <View className="gap-3">

@@ -4,7 +4,8 @@ import type { Warehouse, CreateMovementDto } from './types';
 
 export const movementsApi = {
   getWarehouses: (): Promise<Warehouse[]> =>
-    apiFetch<Warehouse[]>(API_ENDPOINTS.warehouses),
+    apiFetch<{ data: Warehouse[] }>(`${API_ENDPOINTS.warehouses}?limit=200`)
+      .then((res) => res.data),
 
   create: (dto: CreateMovementDto): Promise<unknown> =>
     apiFetch(API_ENDPOINTS.transactions, {
