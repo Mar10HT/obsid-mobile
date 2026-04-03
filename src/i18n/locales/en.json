@@ -72,7 +72,20 @@
   },
   "scan": {
     "title": "Scan QR",
-    "phase": "Phase 3"
+    "instruction": "Point the camera at the QR code",
+    "instructionSub": "of a transfer or loan",
+    "processing": "Processing...",
+    "permissionTitle": "Camera permission required",
+    "permissionMessage": "Obsid needs camera access to scan QR codes.",
+    "permissionButton": "Open settings",
+    "invalidQr": "Invalid QR code",
+    "scanAgain": "Scan again",
+    "successTypes": {
+      "TRANSFER": "Transfer processed",
+      "LOAN_SEND": "Loan registered",
+      "LOAN_RETURN": "Return registered"
+    },
+    "error": "Failed to process code"
   },
   "common": {
     "loading": "Loading..."

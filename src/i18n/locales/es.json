@@ -72,7 +72,20 @@
   },
   "scan": {
     "title": "Escanear QR",
-    "phase": "Fase 3"
+    "instruction": "Apuntá la cámara al código QR",
+    "instructionSub": "de una transferencia o préstamo",
+    "processing": "Procesando...",
+    "permissionTitle": "Permiso de cámara requerido",
+    "permissionMessage": "Obsid necesita acceso a la cámara para escanear códigos QR.",
+    "permissionButton": "Abrir configuración",
+    "invalidQr": "Código QR inválido",
+    "scanAgain": "Escanear de nuevo",
+    "successTypes": {
+      "TRANSFER": "Transferencia procesada",
+      "LOAN_SEND": "Préstamo registrado",
+      "LOAN_RETURN": "Devolución registrada"
+    },
+    "error": "Error al procesar el código"
   },
   "common": {
     "loading": "Cargando..."
