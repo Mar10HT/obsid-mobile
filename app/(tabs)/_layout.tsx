@@ -1,7 +1,7 @@
 import { Redirect, Tabs } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useIsAuthenticated, useAuthStore } from '@features/auth/store';
-import { authApi } from '@features/auth/api';
+import TabBar from '@components/TabBar';
 
 export default function TabsLayout() {
   const isAuthenticated = useIsAuthenticated();
@@ -24,37 +24,14 @@ export default function TabsLayout() {
 
   return (
     <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#1a1a1a',
-          borderTopColor: '#3a3a3a',
-          borderTopWidth: 1,
-        },
-        tabBarActiveTintColor: '#4d7c6f',
-        tabBarInactiveTintColor: '#64748b',
-        tabBarLabelStyle: {
-          fontFamily: 'Outfit_500Medium',
-          fontSize: 11,
-        },
-      }}
+      tabBar={(props) => <TabBar {...props} />}
+      screenOptions={{ headerShown: false }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{ title: 'Dashboard' }}
-      />
-      <Tabs.Screen
-        name="inventory"
-        options={{ title: 'Inventario' }}
-      />
-      <Tabs.Screen
-        name="scan"
-        options={{ title: 'Escanear' }}
-      />
-      <Tabs.Screen
-        name="more"
-        options={{ title: 'Más' }}
-      />
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="inventory" />
+      <Tabs.Screen name="scan" />
+      <Tabs.Screen name="operations" />
+      <Tabs.Screen name="more" />
     </Tabs>
   );
 }
