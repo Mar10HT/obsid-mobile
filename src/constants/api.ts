@@ -43,4 +43,7 @@ export const API_ENDPOINTS = {
 
   // Alerts
   alerts: '/api/alerts',
+
+  // Stock Take
+  stockTake: '/api/stock-take',
 } as const;

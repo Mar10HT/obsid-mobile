@@ -63,7 +63,8 @@
     "loans": "Loans",
     "movements": "Movements",
     "alerts": "Alerts",
-    "transactions": "History"
+    "transactions": "History",
+    "stockTake": "Stock Take"
   },
   "more": {
     "title": "More",
@@ -180,6 +181,38 @@
     "success": "Movement registered",
     "error": "Failed to register movement",
     "noWarehouses": "No warehouses available"
+  },
+  "stockTake": {
+    "title": "Stock Take",
+    "new": "New",
+    "create": "New Stock Take",
+    "selectWarehouse": "Select the warehouse to count:",
+    "start": "Start",
+    "cancel": "Cancel",
+    "save": "Save",
+    "tapToCount": "Continue counting",
+    "items": "{{count}} items",
+    "items_one": "{{count}} item",
+    "progress": "{{counted}} / {{total}} counted",
+    "expected": "Expected",
+    "countedQty": "Counted quantity",
+    "pending": "Pending",
+    "complete": "Complete stock take",
+    "completeDisabled": "{{remaining}} items remaining",
+    "completeTitle": "Complete stock take",
+    "completeMessage": "Apply changes to actual inventory?",
+    "completeApply": "Yes, adjust inventory",
+    "completeNoApply": "Record only",
+    "status": {
+      "IN_PROGRESS": "In progress",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "empty": "No stock takes",
+    "loadError": "Failed to load",
+    "createError": "Failed to create stock take",
+    "saveError": "Failed to save",
+    "completeError": "Failed to complete"
   },
   "transactions": {
     "title": "History",

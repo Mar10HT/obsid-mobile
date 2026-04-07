@@ -63,7 +63,8 @@
     "loans": "Préstamos",
     "movements": "Movimientos",
     "alerts": "Alertas",
-    "transactions": "Historial"
+    "transactions": "Historial",
+    "stockTake": "Conteo físico"
   },
   "more": {
     "title": "Más",
@@ -180,6 +181,38 @@
     "success": "Movimiento registrado",
     "error": "Error al registrar movimiento",
     "noWarehouses": "Sin bodegas disponibles"
+  },
+  "stockTake": {
+    "title": "Conteo físico",
+    "new": "Nuevo",
+    "create": "Nuevo conteo",
+    "selectWarehouse": "Seleccioná la bodega a contar:",
+    "start": "Iniciar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "tapToCount": "Continuar conteo",
+    "items": "{{count}} ítems",
+    "items_one": "{{count}} ítem",
+    "progress": "{{counted}} / {{total}} contados",
+    "expected": "Esperado",
+    "countedQty": "Cantidad contada",
+    "pending": "Pendiente",
+    "complete": "Completar conteo",
+    "completeDisabled": "Faltan {{remaining}} ítems",
+    "completeTitle": "Completar conteo",
+    "completeMessage": "¿Aplicar los cambios al inventario real?",
+    "completeApply": "Sí, ajustar inventario",
+    "completeNoApply": "Solo registrar",
+    "status": {
+      "IN_PROGRESS": "En curso",
+      "COMPLETED": "Completado",
+      "CANCELLED": "Cancelado"
+    },
+    "empty": "Sin conteos",
+    "loadError": "Error al cargar",
+    "createError": "Error al crear el conteo",
+    "saveError": "Error al guardar",
+    "completeError": "Error al completar"
   },
   "transactions": {
     "title": "Historial",

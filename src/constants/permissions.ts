@@ -26,6 +26,11 @@ export const PERMISSIONS = {
   // Alerts
   ALERTS_VIEW: 'alerts:view',
   ALERTS_MANAGE: 'alerts:manage',
+
+  // Stock Take
+  STOCKTAKE_VIEW: 'stocktake:view',
+  STOCKTAKE_CREATE: 'stocktake:create',
+  STOCKTAKE_MANAGE: 'stocktake:manage',
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
