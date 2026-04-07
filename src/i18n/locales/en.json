@@ -71,7 +71,18 @@
     "transfers": "Transfers",
     "loans": "Loans",
     "movements": "Movements",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "changePassword": {
+      "title": "Change password",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "mismatch": "Passwords do not match",
+      "submit": "Save",
+      "cancel": "Cancel",
+      "success": "Password updated",
+      "error": "Could not change password"
+    }
   },
   "scan": {
     "title": "Scan QR",

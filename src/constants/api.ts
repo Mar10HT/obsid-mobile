@@ -46,4 +46,7 @@ export const API_ENDPOINTS = {
 
   // Stock Take
   stockTake: '/api/stock-take',
+
+  // Auth extras
+  changePassword: '/api/auth/change-password',
 } as const;

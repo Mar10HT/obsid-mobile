@@ -71,7 +71,18 @@
     "transfers": "Transferencias",
     "loans": "Préstamos",
     "movements": "Movimientos",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "changePassword": {
+      "title": "Cambiar contraseña",
+      "current": "Contraseña actual",
+      "new": "Nueva contraseña",
+      "confirm": "Confirmar nueva contraseña",
+      "mismatch": "Las contraseñas no coinciden",
+      "submit": "Guardar",
+      "cancel": "Cancelar",
+      "success": "Contraseña actualizada",
+      "error": "No se pudo cambiar la contraseña"
+    }
   },
   "scan": {
     "title": "Escanear QR",

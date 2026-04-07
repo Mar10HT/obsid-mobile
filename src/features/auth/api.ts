@@ -52,6 +52,12 @@ export const authApi = {
     return { ...res.user, permissions: res.permissions, permissionsVersion: res.permissionsVersion };
   },
 
+  changePassword: (currentPassword: string, newPassword: string): Promise<void> =>
+    apiFetch(API_ENDPOINTS.changePassword, {
+      method: 'POST',
+      body: JSON.stringify({ currentPassword, newPassword }),
+    }),
+
   // Sends refresh_token in body — backend needs to support this for mobile
   logout: async (): Promise<void> => {
     const refreshToken = await secureStore.getRefreshToken();
