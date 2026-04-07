@@ -62,7 +62,8 @@
     "transfers": "Transferencias",
     "loans": "Préstamos",
     "movements": "Movimientos",
-    "alerts": "Alertas"
+    "alerts": "Alertas",
+    "transactions": "Historial"
   },
   "more": {
     "title": "Más",
@@ -179,6 +180,12 @@
     "success": "Movimiento registrado",
     "error": "Error al registrar movimiento",
     "noWarehouses": "Sin bodegas disponibles"
+  },
+  "transactions": {
+    "title": "Historial",
+    "total": "{{count}} transacciones en total",
+    "empty": "Sin transacciones",
+    "loadError": "Error al cargar historial"
   },
   "alerts": {
     "title": "Alertas",

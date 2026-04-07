@@ -62,7 +62,8 @@
     "transfers": "Transfers",
     "loans": "Loans",
     "movements": "Movements",
-    "alerts": "Alerts"
+    "alerts": "Alerts",
+    "transactions": "History"
   },
   "more": {
     "title": "More",
@@ -179,6 +180,12 @@
     "success": "Movement registered",
     "error": "Failed to register movement",
     "noWarehouses": "No warehouses available"
+  },
+  "transactions": {
+    "title": "History",
+    "total": "{{count}} transactions total",
+    "empty": "No transactions",
+    "loadError": "Failed to load history"
   },
   "alerts": {
     "title": "Alerts",
