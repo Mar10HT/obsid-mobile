@@ -61,7 +61,8 @@
     "title": "Operaciones",
     "transfers": "Transferencias",
     "loans": "Préstamos",
-    "movements": "Movimientos"
+    "movements": "Movimientos",
+    "alerts": "Alertas"
   },
   "more": {
     "title": "Más",
@@ -178,6 +179,27 @@
     "success": "Movimiento registrado",
     "error": "Error al registrar movimiento",
     "noWarehouses": "Sin bodegas disponibles"
+  },
+  "alerts": {
+    "title": "Alertas",
+    "tabs": {
+      "ALL": "Todas",
+      "LOW_STOCK": "Stock bajo",
+      "OUT_OF_STOCK": "Sin stock",
+      "EXPIRING_SOON": "Por vencer"
+    },
+    "types": {
+      "LOW_STOCK": "Stock bajo",
+      "OUT_OF_STOCK": "Sin stock",
+      "EXPIRING_SOON": "Por vencer"
+    },
+    "qty": "Cant.",
+    "min": "Mín.",
+    "today": "Hoy",
+    "daysAgo_one": "Hace {{count}} día",
+    "daysAgo_other": "Hace {{count}} días",
+    "empty": "Sin alertas activas",
+    "loadError": "Error al cargar alertas"
   },
   "common": {
     "loading": "Cargando..."

@@ -7,6 +7,7 @@ const ITEMS = [
   { labelKey: 'operations.transfers', icon: '⇌', route: '/(operations)/transfers' as const },
   { labelKey: 'operations.loans',     icon: '⊟', route: '/(operations)/loans'     as const },
   { labelKey: 'operations.movements', icon: '↕', route: '/(operations)/movements/new' as const },
+  { labelKey: 'operations.alerts',    icon: '⚠', route: '/(operations)/alerts'    as const },
 ] as const;
 
 export default function OperationsScreen() {

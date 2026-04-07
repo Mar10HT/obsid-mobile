@@ -61,7 +61,8 @@
     "title": "Operations",
     "transfers": "Transfers",
     "loans": "Loans",
-    "movements": "Movements"
+    "movements": "Movements",
+    "alerts": "Alerts"
   },
   "more": {
     "title": "More",
@@ -178,6 +179,27 @@
     "success": "Movement registered",
     "error": "Failed to register movement",
     "noWarehouses": "No warehouses available"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "tabs": {
+      "ALL": "All",
+      "LOW_STOCK": "Low stock",
+      "OUT_OF_STOCK": "Out of stock",
+      "EXPIRING_SOON": "Expiring soon"
+    },
+    "types": {
+      "LOW_STOCK": "Low stock",
+      "OUT_OF_STOCK": "Out of stock",
+      "EXPIRING_SOON": "Expiring soon"
+    },
+    "qty": "Qty",
+    "min": "Min.",
+    "today": "Today",
+    "daysAgo_one": "{{count}} day ago",
+    "daysAgo_other": "{{count}} days ago",
+    "empty": "No active alerts",
+    "loadError": "Failed to load alerts"
   },
   "common": {
     "loading": "Loading..."

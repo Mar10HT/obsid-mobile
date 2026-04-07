@@ -22,6 +22,10 @@ export const PERMISSIONS = {
 
   // Reports
   REPORTS_VIEW: 'reports:view',
+
+  // Alerts
+  ALERTS_VIEW: 'alerts:view',
+  ALERTS_MANAGE: 'alerts:manage',
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];

@@ -40,4 +40,7 @@ export const API_ENDPOINTS = {
 
   // Transactions
   transactions: '/api/transactions',
+
+  // Alerts
+  alerts: '/api/alerts',
 } as const;
