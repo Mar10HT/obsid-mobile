@@ -43,6 +43,8 @@ export const useAuthStore = create<AuthState>((set, get) => {
 
     logout: async () => {
       set({ isLoading: true });
+      // Clear push token before invalidating the session so the PATCH still has a valid token
+      await authApi.clearPushToken().catch(() => {});
       await authApi.logout();
       set({ user: null, isAuthenticated: false, isLoading: false });
     },
