@@ -81,7 +81,13 @@ function CreateModal({
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+      onShow={() => setSelected(null)}
+    >
       <View className="flex-1 justify-end bg-black/60">
         <View className="bg-surface rounded-t-3xl p-6">
           <Text className="text-foreground font-sans-bold text-lg mb-4">
