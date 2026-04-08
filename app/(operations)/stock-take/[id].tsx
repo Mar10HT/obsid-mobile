@@ -9,6 +9,7 @@ import {
   Alert,
   Modal,
 } from 'react-native';
+import type { TFunction } from 'i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -31,7 +32,7 @@ function CountModal({
   onClose: () => void;
   onSave: (qty: number) => void;
   isSaving: boolean;
-  t: (key: string, opts?: object) => string;
+  t: TFunction;
 }) {
   const [qty, setQty] = useState(item?.countedQty?.toString() ?? '');
 
@@ -108,7 +109,7 @@ function ItemRow({
 }: {
   item: StockTakeItem;
   onPress: () => void;
-  t: (key: string) => string;
+  t: TFunction;
 }) {
   const counted = item.countedQty !== null;
   const variance = item.variance ?? 0;

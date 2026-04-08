@@ -49,4 +49,5 @@ export const API_ENDPOINTS = {
 
   // Auth extras
   changePassword: '/api/auth/change-password',
+  pushToken: '/api/users/push-token',
 } as const;

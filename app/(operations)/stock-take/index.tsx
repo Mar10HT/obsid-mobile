@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, RefreshControl, Modal, Alert } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { stockTakeApi } from '@features/stock-take/api';
@@ -25,7 +26,7 @@ function StockTakeCard({
   onPress,
 }: {
   item: StockTakeListItem;
-  t: (key: string, opts?: object) => string;
+  t: TFunction;
   onPress: () => void;
 }) {
   const style = statusStyle(item.status);
@@ -76,7 +77,7 @@ function CreateModal({
   warehouses: Warehouse[];
   onCreate: (warehouseId: string) => void;
   isCreating: boolean;
-  t: (key: string) => string;
+  t: TFunction;
 }) {
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -169,7 +170,8 @@ export default function StockTakeListScreen() {
     onSuccess: (newSt) => {
       queryClient.invalidateQueries({ queryKey: ['stock-takes'] });
       setShowCreate(false);
-      router.push(`/(operations)/stock-take/${newSt.id}`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      router.push(`/(operations)/stock-take/${newSt.id}` as any);
     },
     onError: () => Alert.alert(t('stockTake.createError')),
   });
@@ -208,7 +210,8 @@ export default function StockTakeListScreen() {
           <StockTakeCard
             item={item}
             t={t}
-            onPress={() => router.push(`/(operations)/stock-take/${item.id}`)}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onPress={() => router.push(`/(operations)/stock-take/${item.id}` as any)}
           />
         )}
         refreshControl={

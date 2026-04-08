@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { alertsApi } from '@features/alerts/api';
 import type { Alert, AlertType } from '@features/alerts/types';
@@ -21,7 +22,7 @@ function alertStyle(type: AlertType): { color: string; bg: string } {
   }
 }
 
-function AlertCard({ alert, t }: { alert: Alert; t: (key: string) => string }) {
+function AlertCard({ alert, t }: { alert: Alert; t: TFunction }) {
   const style = alertStyle(alert.type);
   const daysAgo = Math.floor(
     (Date.now() - new Date(alert.createdAt).getTime()) / (1000 * 60 * 60 * 24)
