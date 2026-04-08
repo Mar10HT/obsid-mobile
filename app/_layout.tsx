@@ -11,7 +11,8 @@ import {
   Outfit_600SemiBold,
   Outfit_700Bold,
 } from '@expo-google-fonts/outfit';
-import { useAuthStore } from '@features/auth/store';
+import { useAuthStore, useIsAuthenticated } from '@features/auth/store';
+import { usePushNotifications } from '@hooks/use-push-notifications';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,6 +29,8 @@ const queryClient = new QueryClient({
 
 function RootLayoutInner() {
   const { loadStoredSession, isLoading } = useAuthStore();
+  const isAuthenticated = useIsAuthenticated();
+  usePushNotifications(isAuthenticated);
 
   useEffect(() => {
     loadStoredSession();

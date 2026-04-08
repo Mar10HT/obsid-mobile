@@ -1,6 +1,7 @@
 import { View, Text, FlatList, RefreshControl } from 'react-native';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiFetch } from '@features/auth/client';
 import { API_ENDPOINTS } from '@constants/api';
@@ -31,7 +32,7 @@ function fetchPage(page: number): Promise<PageResponse> {
   return apiFetch<PageResponse>(`${API_ENDPOINTS.transactions}?page=${page}&limit=20`);
 }
 
-function formatDate(iso: string, t: (key: string, opts?: object) => string): string {
+function formatDate(iso: string, t: TFunction): string {
   const date = new Date(iso);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -44,7 +45,7 @@ function formatDate(iso: string, t: (key: string, opts?: object) => string): str
   return t('dashboard.timeAgo.days_other', { count: diffD });
 }
 
-function TxRow({ tx, t }: { tx: RawTransaction; t: (key: string, opts?: object) => string }) {
+function TxRow({ tx, t }: { tx: RawTransaction; t: TFunction }) {
   const style = TX_COLOR[tx.type] ?? { color: '#94a3b8', bg: '#1e293b' };
   const icon = TX_ICON[tx.type] ?? '·';
   const itemName = tx.items[0]?.inventoryItem?.name ?? '—';

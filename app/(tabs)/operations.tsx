@@ -28,7 +28,8 @@ export default function OperationsScreen() {
             key={item.route}
             className="flex-row items-center bg-surface-variant rounded-xl px-4 py-4 gap-4"
             activeOpacity={0.75}
-            onPress={() => router.push(item.route)}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onPress={() => router.push(item.route as any)}
           >
             <Text className="text-foreground text-2xl">{item.icon}</Text>
             <Text className="text-foreground font-sans-medium text-base">{t(item.labelKey)}</Text>

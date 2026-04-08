@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import type { TFunction } from 'i18next';
 import {
   View,
   Text,
@@ -32,7 +33,7 @@ const STATUS_COLORS: Record<string, { text: string; bg: string }> = {
 
 const FILTER_TABS: FilterTab[] = ['PENDING', 'APPROVED', 'SENT'];
 
-function timeAgo(iso: string, t: (k: string, o?: object) => string): string {
+function timeAgo(iso: string, t: TFunction): string {
   const diff = Date.now() - new Date(iso).getTime();
   const minutes = Math.floor(diff / 60_000);
   if (minutes < 60) return t('dashboard.timeAgo.minutes', { count: minutes });
