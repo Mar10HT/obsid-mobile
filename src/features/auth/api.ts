@@ -1,29 +1,17 @@
 import { API_BASE_URL, API_ENDPOINTS } from '@constants/api';
 import { apiFetch } from './client';
 import { secureStore } from './secure-store';
+import { AuthTokensSchema, GetMeResponseSchema } from './schemas';
+
+export type { AuthUser } from './schemas';
 
 export interface LoginCredentials {
   email: string;
   password: string;
 }
 
-export interface AuthTokens {
-  access_token: string;
-  refresh_token: string;
-}
-
-export interface AuthUser {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  permissions: string[];
-  permissionsVersion: number;
-  warehouseId?: string;
-}
-
 export const authApi = {
-  login: async (credentials: LoginCredentials): Promise<AuthUser> => {
+  login: async (credentials: LoginCredentials) => {
     // Login is CSRF-exempt on the API: mobile clients call this before having
     // a Bearer token and React Native fetch cannot access HttpOnly cookies.
     const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.login}`, {
@@ -33,25 +21,21 @@ export const authApi = {
     });
 
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error(body.message ?? 'Credenciales incorrectas');
+      const body = await res.json().catch(() => ({})) as Record<string, unknown>;
+      throw new Error(typeof body.message === 'string' ? body.message : 'Credenciales incorrectas');
     }
 
-    const data: AuthTokens & { user: unknown } = await res.json();
-    if (!data.access_token || !data.refresh_token) {
-      throw new Error('Respuesta de servidor inválida al iniciar sesión');
-    }
-    await secureStore.setTokens(data.access_token, data.refresh_token);
+    const raw: unknown = await res.json();
+    // Validate token shape at the API boundary
+    const { access_token, refresh_token } = AuthTokensSchema.parse(raw);
+    await secureStore.setTokens(access_token, refresh_token);
     // Fetch full user profile including permissions (login response omits them)
     return authApi.getMe();
   },
 
-  getMe: async (): Promise<AuthUser> => {
-    const res = await apiFetch<{
-      user: { id: string; email: string; name: string; role: string; warehouseId?: string };
-      permissions: string[];
-      permissionsVersion: number;
-    }>(API_ENDPOINTS.me);
+  getMe: async () => {
+    const raw = await apiFetch<unknown>(API_ENDPOINTS.me);
+    const res = GetMeResponseSchema.parse(raw);
     return { ...res.user, permissions: res.permissions, permissionsVersion: res.permissionsVersion };
   },
 

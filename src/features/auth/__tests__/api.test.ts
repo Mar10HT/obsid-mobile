@@ -94,13 +94,14 @@ describe('authApi', () => {
       mockFetch.mockRestore();
     });
 
-    it('throws when the response is missing tokens', async () => {
+    it('throws a validation error when the response is missing tokens', async () => {
       const mockFetch = jest.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
         ok: true,
         json: async () => ({ user: {} }),
       } as Response);
 
-      await expect(authApi.login(credentials)).rejects.toThrow('Respuesta de servidor inválida');
+      // AuthTokensSchema.parse throws a ZodError when tokens are absent
+      await expect(authApi.login(credentials)).rejects.toThrow(/access_token|invalid/i);
 
       mockFetch.mockRestore();
     });
