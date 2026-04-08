@@ -18,7 +18,9 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set, get) => {
-  // Register the auth failure callback so the client can trigger logout
+  // Register the auth failure callback so the client can trigger logout.
+  // Called once at module load time — Zustand's factory runs exactly once.
+  // If testing, mock setAuthFailureCallback to prevent global state leaks.
   setAuthFailureCallback(() => {
     set({ user: null, isAuthenticated: false });
   });
@@ -43,10 +45,16 @@ export const useAuthStore = create<AuthState>((set, get) => {
 
     logout: async () => {
       set({ isLoading: true });
-      // Clear push token before invalidating the session so the PATCH still has a valid token
-      await authApi.clearPushToken().catch(() => {});
-      await authApi.logout();
-      set({ user: null, isAuthenticated: false, isLoading: false });
+      try {
+        // Clear push token before invalidating the session so the PATCH still has a valid token
+        await authApi.clearPushToken().catch((err) => {
+          // TODO: replace with production monitoring (e.g. Sentry) when integrated
+          console.warn('[Auth] Failed to clear push token on logout:', err);
+        });
+        await authApi.logout();
+      } finally {
+        set({ user: null, isAuthenticated: false, isLoading: false });
+      }
     },
 
     loadStoredSession: async () => {

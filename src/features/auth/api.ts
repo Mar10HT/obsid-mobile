@@ -37,7 +37,10 @@ export const authApi = {
       throw new Error(body.message ?? 'Credenciales incorrectas');
     }
 
-    const data: AuthTokens & { user: object } = await res.json();
+    const data: AuthTokens & { user: unknown } = await res.json();
+    if (!data.access_token || !data.refresh_token) {
+      throw new Error('Respuesta de servidor inválida al iniciar sesión');
+    }
     await secureStore.setTokens(data.access_token, data.refresh_token);
     // Fetch full user profile including permissions (login response omits them)
     return authApi.getMe();
@@ -45,7 +48,7 @@ export const authApi = {
 
   getMe: async (): Promise<AuthUser> => {
     const res = await apiFetch<{
-      user: { id: string; email: string; name: string; role: string };
+      user: { id: string; email: string; name: string; role: string; warehouseId?: string };
       permissions: string[];
       permissionsVersion: number;
     }>(API_ENDPOINTS.me);
@@ -58,6 +61,7 @@ export const authApi = {
       body: JSON.stringify({ currentPassword, newPassword }),
     }),
 
+  // Passing null clears the stored token — backend accepts `{ token: null }` to unregister
   clearPushToken: (): Promise<void> =>
     apiFetch(API_ENDPOINTS.pushToken, {
       method: 'PATCH',

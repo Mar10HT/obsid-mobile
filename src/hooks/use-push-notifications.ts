@@ -33,8 +33,9 @@ async function registerForPushNotifications(): Promise<string | null> {
     });
   }
 
-  const projectId = Constants.expoConfig?.extra?.eas?.projectId as string | undefined;
-  if (__DEV__ && !projectId) {
+  const rawProjectId = Constants.expoConfig?.extra?.eas?.projectId;
+  const projectId = typeof rawProjectId === 'string' ? rawProjectId : undefined;
+  if (!projectId) {
     console.warn('[PushNotifications] Missing EAS projectId — push token will only work in Expo Go');
   }
 
@@ -49,11 +50,19 @@ async function savePushToken(token: string): Promise<void> {
   });
 }
 
+/**
+ * Registers and manages Expo push notifications for the current user.
+ * Must be called from a single root layout component — setNotificationHandler
+ * is a global singleton and calling this hook from multiple components
+ * simultaneously would cause the last mount to silently override the handler.
+ */
 export function usePushNotifications(isAuthenticated: boolean) {
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
 
-  // Configure foreground notification display inside the hook (not at module level)
+  // Configure foreground notification display for the app's lifetime.
+  // setNotificationHandler is a global singleton — intentionally no cleanup
+  // so notifications keep showing if the layout remounts (e.g. hot reload).
   useEffect(() => {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
@@ -64,9 +73,6 @@ export function usePushNotifications(isAuthenticated: boolean) {
         shouldShowList: true,
       }),
     });
-    return () => {
-      Notifications.setNotificationHandler(null);
-    };
   }, []);
 
   useEffect(() => {
@@ -77,12 +83,14 @@ export function usePushNotifications(isAuthenticated: boolean) {
       .then((token) => {
         if (token) {
           savePushToken(token).catch((err) => {
-            if (__DEV__) console.warn('[PushNotifications] Failed to save token:', err);
+            // TODO: replace with production monitoring (e.g. Sentry) when integrated
+            console.warn('[PushNotifications] Failed to save token:', err);
           });
         }
       })
       .catch((err) => {
-        if (__DEV__) console.warn('[PushNotifications] Failed to register:', err);
+        // TODO: replace with production monitoring (e.g. Sentry) when integrated
+        console.warn('[PushNotifications] Failed to register:', err);
       });
 
     // Listen for incoming notifications while app is in foreground
