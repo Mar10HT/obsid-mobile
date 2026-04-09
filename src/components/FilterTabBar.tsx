@@ -21,6 +21,8 @@ export function FilterTabBar<T extends string>({
           onPress={() => onChange(tab)}
           className={`px-4 py-2 rounded-full ${activeTab === tab ? 'bg-primary' : 'bg-surface-variant'}`}
           activeOpacity={0.7}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: activeTab === tab }}
         >
           <Text
             className={`font-sans-semibold text-xs ${activeTab === tab ? 'text-white' : 'text-on-surface-muted'}`}

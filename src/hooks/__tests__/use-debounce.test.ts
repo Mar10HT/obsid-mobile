@@ -47,13 +47,13 @@ describe('useDebounce', () => {
     );
 
     rerender({ value: 'b', delay: 300 });
-    jest.advanceTimersByTime(100);
+    act(() => { jest.advanceTimersByTime(100); });
     rerender({ value: 'c', delay: 300 });
-    jest.advanceTimersByTime(100);
+    act(() => { jest.advanceTimersByTime(100); });
     rerender({ value: 'd', delay: 300 });
 
     // Not yet elapsed after the last update
-    jest.advanceTimersByTime(200);
+    act(() => { jest.advanceTimersByTime(200); });
     expect(result.current).toBe('a');
 
     act(() => {

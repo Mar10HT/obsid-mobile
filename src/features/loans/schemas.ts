@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const LoanStatusSchema = z.enum([
+export const LoanStatusSchema = z.enum([
   'PENDING',
   'SENT',
   'RECEIVED',

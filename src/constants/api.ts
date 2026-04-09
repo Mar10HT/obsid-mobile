@@ -11,7 +11,14 @@ function getApiBaseUrl(): string {
       return `http://${ip}:3001`;
     }
   }
-  return env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3001';
+  // In dev/test fall back gracefully; in production the URL is required
+  if (!env.EXPO_PUBLIC_API_URL) {
+    if (typeof __DEV__ !== 'undefined' && !__DEV__) {
+      throw new Error('[api] EXPO_PUBLIC_API_URL must be set in production builds.');
+    }
+    return 'http://localhost:3001';
+  }
+  return env.EXPO_PUBLIC_API_URL;
 }
 
 export const API_BASE_URL = getApiBaseUrl();

@@ -12,7 +12,7 @@ export function formatShortDate(iso: string): string {
  * using the app's i18n `dashboard.timeAgo.*` keys.
  */
 export function timeAgo(iso: string, t: TFunction): string {
-  const diff = Date.now() - new Date(iso).getTime();
+  const diff = Math.max(0, Date.now() - new Date(iso).getTime());
   const minutes = Math.floor(diff / 60_000);
   if (minutes < 60) return t('dashboard.timeAgo.minutes', { count: minutes });
   const hours = Math.floor(minutes / 60);
