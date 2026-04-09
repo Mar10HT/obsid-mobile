@@ -1,29 +1,32 @@
 import { apiFetch } from '@features/auth/client';
 import { API_ENDPOINTS } from '@constants/api';
+import { LoanSchema, LoansListResponseSchema } from './schemas';
 import type { Loan, LoansListResponse, LoanStatus } from './types';
+import { z } from 'zod';
+
+const LoanWithQrSchema = LoanSchema.extend({ qrCodeDataUrl: z.string() });
+type LoanWithQr = z.infer<typeof LoanWithQrSchema>;
+
+const QrResponseSchema = z.object({ qrCodeDataUrl: z.string() });
 
 export const loansApi = {
   getList: (status?: LoanStatus): Promise<LoansListResponse> => {
     const qs = status ? `?status=${status}` : '';
-    return apiFetch<LoansListResponse>(`${API_ENDPOINTS.loans}${qs}`);
+    return apiFetch<unknown>(`${API_ENDPOINTS.loans}${qs}`).then(LoansListResponseSchema.parse);
   },
 
   getActive: (): Promise<LoansListResponse> =>
-    apiFetch<LoansListResponse>(`${API_ENDPOINTS.loans}/active`),
+    apiFetch<unknown>(`${API_ENDPOINTS.loans}/active`).then(LoansListResponseSchema.parse),
 
-  send: (id: string): Promise<Loan & { qrCodeDataUrl: string }> =>
-    apiFetch<Loan & { qrCodeDataUrl: string }>(`${API_ENDPOINTS.loans}/${id}/send`, {
-      method: 'PATCH',
-    }),
+  send: (id: string): Promise<LoanWithQr> =>
+    apiFetch<unknown>(`${API_ENDPOINTS.loans}/${id}/send`, { method: 'PATCH' }).then(LoanWithQrSchema.parse),
 
-  getQr: (id: string, type: 'send' | 'return'): Promise<{ qrDataUrl: string }> =>
-    apiFetch<{ qrDataUrl: string }>(`${API_ENDPOINTS.loans}/${id}/qr/${type}`),
+  getQr: (id: string, type: 'send' | 'return'): Promise<{ qrCodeDataUrl: string }> =>
+    apiFetch<unknown>(`${API_ENDPOINTS.loans}/${id}/qr/${type}`).then(QrResponseSchema.parse),
 
-  initiateReturn: (id: string): Promise<Loan & { qrCodeDataUrl: string }> =>
-    apiFetch<Loan & { qrCodeDataUrl: string }>(`${API_ENDPOINTS.loans}/${id}/initiate-return`, {
-      method: 'PATCH',
-    }),
+  initiateReturn: (id: string): Promise<LoanWithQr> =>
+    apiFetch<unknown>(`${API_ENDPOINTS.loans}/${id}/initiate-return`, { method: 'PATCH' }).then(LoanWithQrSchema.parse),
 
   cancel: (id: string): Promise<Loan> =>
-    apiFetch<Loan>(`${API_ENDPOINTS.loans}/${id}/cancel`, { method: 'PATCH' }),
+    apiFetch<unknown>(`${API_ENDPOINTS.loans}/${id}/cancel`, { method: 'PATCH' }).then(LoanSchema.parse),
 };

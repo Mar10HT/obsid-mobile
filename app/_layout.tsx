@@ -1,6 +1,6 @@
 import '../global.css';
 import '../src/i18n';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -13,19 +13,6 @@ import {
 } from '@expo-google-fonts/outfit';
 import { useAuthStore, useIsAuthenticated } from '@features/auth/store';
 import { usePushNotifications } from '@hooks/use-push-notifications';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 30_000,
-      retry: 2,
-      networkMode: 'offlineFirst',
-    },
-    mutations: {
-      networkMode: 'offlineFirst',
-    },
-  },
-});
 
 function RootLayoutInner() {
   const { loadStoredSession, isLoading } = useAuthStore();
@@ -48,6 +35,19 @@ function RootLayoutInner() {
 }
 
 export default function RootLayout() {
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 30_000,
+        retry: 2,
+        networkMode: 'offlineFirst',
+      },
+      mutations: {
+        networkMode: 'offlineFirst',
+      },
+    },
+  }));
+
   const [fontsLoaded] = useFonts({
     Outfit_400Regular,
     Outfit_500Medium,

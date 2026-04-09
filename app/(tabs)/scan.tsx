@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -173,15 +173,19 @@ export default function ScanScreen() {
     isProcessing.current = false;
   }, []);
 
-  // Permission not yet determined — request on mount
+  // Request permission in an effect to avoid calling it during render
+  useEffect(() => {
+    if (!permission?.granted && permission?.canAskAgain) {
+      requestPermission();
+    }
+  }, [permission?.granted, permission?.canAskAgain]);
+
+  // Permission not yet determined — wait for it
   if (!permission) {
     return <View className="flex-1 bg-surface" />;
   }
 
   if (!permission.granted) {
-    if (permission.canAskAgain) {
-      requestPermission();
-    }
     return <PermissionDenied />;
   }
 

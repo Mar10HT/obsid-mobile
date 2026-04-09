@@ -1,13 +1,10 @@
 import { useState, useCallback } from 'react';
-import type { TFunction } from 'i18next';
 import {
   View,
   Text,
   FlatList,
   TouchableOpacity,
   RefreshControl,
-  Modal,
-  Image,
   ActivityIndicator,
   Alert,
 } from 'react-native';
@@ -18,6 +15,9 @@ import { transfersApi } from '@features/transfers/api';
 import type { TransferRequest, FilterTab } from '@features/transfers/types';
 import { usePermission } from '@hooks/use-permission';
 import { PERMISSIONS } from '@constants/permissions';
+import { FilterTabBar } from '@components/FilterTabBar';
+import { QrDisplayModal } from '@components/QrDisplayModal';
+import { timeAgo } from '@/utils/format-date';
 
 // --- helpers ---
 
@@ -33,18 +33,9 @@ const STATUS_COLORS: Record<string, { text: string; bg: string }> = {
 
 const FILTER_TABS: FilterTab[] = ['PENDING', 'APPROVED', 'SENT'];
 
-function timeAgo(iso: string, t: TFunction): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 60) return t('dashboard.timeAgo.minutes', { count: minutes });
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return t('dashboard.timeAgo.hours', { count: hours });
-  return t('dashboard.timeAgo.days', { count: Math.floor(hours / 24) });
-}
+// --- QR Modal (transfer-specific data fetching) ---
 
-// --- QR Modal ---
-
-function QrModal({
+function TransferQrModal({
   transferId,
   visible,
   onClose,
@@ -62,33 +53,15 @@ function QrModal({
   });
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <View className="flex-1 bg-black/80 items-center justify-center px-6">
-        <View className="bg-surface-variant rounded-2xl p-6 w-full items-center gap-4">
-          <Text className="text-foreground font-sans-bold text-lg">{t('transfers.qrModal.title')}</Text>
-          <Text className="text-on-surface-muted font-sans text-xs text-center">
-            {t('transfers.qrModal.instruction')}
-          </Text>
-
-          {isLoading && <ActivityIndicator color="#4d7c6f" />}
-          {data?.qrCodeDataUrl && (
-            <Image
-              source={{ uri: data.qrCodeDataUrl }}
-              style={{ width: 220, height: 220 }}
-              resizeMode="contain"
-            />
-          )}
-
-          <TouchableOpacity
-            className="bg-primary rounded-xl px-6 py-3 w-full items-center mt-2"
-            activeOpacity={0.8}
-            onPress={onClose}
-          >
-            <Text className="text-white font-sans-semibold">{t('transfers.qrModal.close')}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
+    <QrDisplayModal
+      visible={visible}
+      title={t('transfers.qrModal.title')}
+      instruction={t('transfers.qrModal.instruction')}
+      closeLabel={t('transfers.qrModal.close')}
+      qrUrl={data?.qrCodeDataUrl}
+      isLoading={isLoading}
+      onClose={onClose}
+    />
   );
 }
 
@@ -192,7 +165,7 @@ export default function TransfersScreen() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<FilterTab>('PENDING');
   const [qrTransferId, setQrTransferId] = useState<string | null>(null);
-  const [actioningId, setActioningId] = useState<string | null>(null);
+  const [actioningIds, setActioningIds] = useState<Set<string>>(new Set());
 
   const { data, isLoading, isError, isFetching, refetch } = useQuery({
     queryKey: ['transfers', activeTab],
@@ -205,27 +178,30 @@ export default function TransfersScreen() {
 
   const approveMutation = useMutation({
     mutationFn: (id: string) => transfersApi.approve(id),
-    onMutate: (id) => setActioningId(id),
-    onSuccess: () => { invalidate(); setActioningId(null); },
-    onError: (err) => {
-      setActioningId(null);
+    onMutate: (id) => setActioningIds((prev) => new Set([...prev, id])),
+    onSuccess: (_, id) => {
+      invalidate();
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
+    },
+    onError: (err, id) => {
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       Alert.alert(t('transfers.actionError'), err instanceof Error ? err.message : '');
     },
   });
 
   const sendMutation = useMutation({
     mutationFn: (id: string) => transfersApi.send(id),
-    onMutate: (id) => setActioningId(id),
-    onSuccess: (result) => {
+    onMutate: (id) => setActioningIds((prev) => new Set([...prev, id])),
+    onSuccess: (result, id) => {
       invalidate();
-      setActioningId(null);
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       // Show QR immediately after sending
       if (result.qrCodeDataUrl) {
         setQrTransferId(result.id);
       }
     },
-    onError: (err) => {
-      setActioningId(null);
+    onError: (err, id) => {
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       Alert.alert(t('transfers.actionError'), err instanceof Error ? err.message : '');
     },
   });
@@ -239,23 +215,12 @@ export default function TransfersScreen() {
         <Text className="text-foreground font-sans-bold text-2xl">{t('transfers.title')}</Text>
       </View>
 
-      {/* Filter tabs */}
-      <View className="flex-row px-5 mb-4 gap-2">
-        {FILTER_TABS.map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            onPress={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-full ${activeTab === tab ? 'bg-primary' : 'bg-surface-variant'}`}
-            activeOpacity={0.7}
-          >
-            <Text
-              className={`font-sans-semibold text-xs ${activeTab === tab ? 'text-white' : 'text-on-surface-muted'}`}
-            >
-              {t(`transfers.tabs.${tab}`)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <FilterTabBar
+        tabs={FILTER_TABS}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        label={(tab) => t(`transfers.tabs.${tab}`)}
+      />
 
       {isError && (
         <Text className="text-status-error font-sans text-sm text-center px-5 mb-4">
@@ -272,7 +237,7 @@ export default function TransfersScreen() {
             onApprove={(id) => approveMutation.mutate(id)}
             onSend={(id) => sendMutation.mutate(id)}
             onViewQr={(id) => setQrTransferId(id)}
-            isActioning={actioningId === item.id}
+            isActioning={actioningIds.has(item.id)}
           />
         )}
         refreshControl={
@@ -289,7 +254,7 @@ export default function TransfersScreen() {
         contentContainerStyle={{ paddingBottom: 24 }}
       />
 
-      <QrModal
+      <TransferQrModal
         transferId={qrTransferId}
         visible={!!qrTransferId}
         onClose={() => setQrTransferId(null)}

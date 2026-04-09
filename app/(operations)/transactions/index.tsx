@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiFetch } from '@features/auth/client';
 import { API_ENDPOINTS } from '@constants/api';
 import type { RawTransaction } from '@features/inventory/types';
+import { timeAgo } from '@/utils/format-date';
 
 const TX_ICON: Record<string, string> = {
   IN: '↓',
@@ -28,21 +29,9 @@ interface PageResponse {
   meta: { total: number; page: number; limit: number; totalPages: number };
 }
 
-function fetchPage(page: number): Promise<PageResponse> {
+function fetchPage(pageParam: unknown): Promise<PageResponse> {
+  const page = typeof pageParam === 'number' ? pageParam : 1;
   return apiFetch<PageResponse>(`${API_ENDPOINTS.transactions}?page=${page}&limit=20`);
-}
-
-function formatDate(iso: string, t: TFunction): string {
-  const date = new Date(iso);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-  const diffH = Math.floor(diffMin / 60);
-  const diffD = Math.floor(diffH / 24);
-
-  if (diffMin < 60) return t('dashboard.timeAgo.minutes_other', { count: diffMin });
-  if (diffH < 24) return t('dashboard.timeAgo.hours_other', { count: diffH });
-  return t('dashboard.timeAgo.days_other', { count: diffD });
 }
 
 function TxRow({ tx, t }: { tx: RawTransaction; t: TFunction }) {
@@ -75,7 +64,7 @@ function TxRow({ tx, t }: { tx: RawTransaction; t: TFunction }) {
           {tx.type === 'OUT' ? '-' : '+'}{qty}
         </Text>
         <Text className="text-on-surface-muted font-mono text-xs mt-0.5">
-          {formatDate(tx.date, t)}
+          {timeAgo(tx.date, t)}
         </Text>
       </View>
     </View>
@@ -86,10 +75,10 @@ export default function TransactionsScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
-  const { data, isError, isFetchingNextPage, fetchNextPage, hasNextPage, refetch, isFetching } =
+  const { data, isError, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, refetch, isFetching } =
     useInfiniteQuery({
       queryKey: ['transactions-history'],
-      queryFn: ({ pageParam }) => fetchPage(pageParam as number),
+      queryFn: ({ pageParam }) => fetchPage(pageParam),
       initialPageParam: 1,
       getNextPageParam: (last) =>
         last.meta.page < last.meta.totalPages ? last.meta.page + 1 : undefined,
@@ -134,11 +123,13 @@ export default function TransactionsScreen() {
         }}
         onEndReachedThreshold={0.3}
         ListEmptyComponent={
-          <View className="items-center py-12">
-            <Text className="text-on-surface-muted font-sans text-sm">
-              {t('transactions.empty')}
-            </Text>
-          </View>
+          !isLoading ? (
+            <View className="items-center py-12">
+              <Text className="text-on-surface-muted font-sans text-sm">
+                {t('transactions.empty')}
+              </Text>
+            </View>
+          ) : null
         }
         ListFooterComponent={
           isFetchingNextPage ? (

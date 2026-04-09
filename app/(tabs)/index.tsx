@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser } from '@features/auth/store';
 import { inventoryApi } from '@features/inventory/api';
 import type { Transaction } from '@features/inventory/types';
+import { timeAgo } from '@/utils/format-date';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   ENTRADA:       '#10b981',
@@ -32,17 +33,7 @@ function ActivityRow({ tx }: { tx: Transaction }) {
   const sign = tx.type === 'ENTRADA' || tx.type === 'DEVOLUCION' ? '+' : '-';
   const signColor = sign === '+' ? '#10b981' : '#ef4444';
 
-  const diff = Date.now() - new Date(tx.createdAt).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  let ago: string;
-  if (minutes < 60) {
-    ago = t('dashboard.timeAgo.minutes', { count: minutes });
-  } else if (minutes < 1440) {
-    ago = t('dashboard.timeAgo.hours', { count: Math.floor(minutes / 60) });
-  } else {
-    ago = t('dashboard.timeAgo.days', { count: Math.floor(minutes / 1440) });
-  }
-
+  const ago = timeAgo(tx.createdAt, t);
   const typeName = t(`dashboard.txTypes.${tx.type}`, { defaultValue: tx.type });
 
   return (
@@ -99,7 +90,9 @@ export default function DashboardScreen() {
           <Text className="text-foreground font-sans-bold text-2xl">{user?.name ?? '—'}</Text>
         </View>
         <View className="bg-surface-variant rounded-full px-3 py-1.5">
-          <Text className="text-on-surface-muted font-sans text-xs">Bodega Central</Text>
+          <Text className="text-on-surface-muted font-sans text-xs">
+            {t('dashboard.noWarehouse')}
+          </Text>
         </View>
       </View>
 
@@ -110,7 +103,10 @@ export default function DashboardScreen() {
       </View>
       <View className="px-5 flex-row gap-3">
         <StatCard label={t('dashboard.stats.activeLoans')} value={stats?.activeLoans ?? '—'} color="#3b82f6" />
-        <StatCard label={t('dashboard.stats.pending')} value={stats?.pendingTransfers ?? '—'} />
+        {/* Pending transfers card is only shown when a real value is available from the API */}
+        {stats?.pendingTransfers !== undefined && (
+          <StatCard label={t('dashboard.stats.pending')} value={stats.pendingTransfers} />
+        )}
       </View>
 
       {/* Quick actions */}

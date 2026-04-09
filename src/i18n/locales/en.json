@@ -21,6 +21,7 @@
       "activeLoans": "Active Loans",
       "pending": "Pending"
     },
+    "noWarehouse": "No warehouse",
     "quickActions": "Quick Actions",
     "scanQr": "Scan QR",
     "movement": "Movement",
