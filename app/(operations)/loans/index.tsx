@@ -5,8 +5,6 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
-  Modal,
-  Image,
   ActivityIndicator,
   Alert,
 } from 'react-native';
@@ -17,6 +15,9 @@ import { loansApi } from '@features/loans/api';
 import type { Loan, LoanFilterTab, LoanStatus } from '@features/loans/types';
 import { usePermission } from '@hooks/use-permission';
 import { PERMISSIONS } from '@constants/permissions';
+import { FilterTabBar } from '@components/FilterTabBar';
+import { QrDisplayModal } from '@components/QrDisplayModal';
+import { formatShortDate } from '@/utils/format-date';
 
 // --- helpers ---
 
@@ -32,10 +33,6 @@ const STATUS_COLORS: Record<string, { text: string; bg: string }> = {
 
 const FILTER_TABS: LoanFilterTab[] = ['PENDING', 'ACTIVE', 'RETURN_PENDING'];
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
-}
-
 function isOverdue(loan: Loan): boolean {
   return (
     (loan.status === 'SENT' || loan.status === 'RECEIVED') &&
@@ -43,11 +40,11 @@ function isOverdue(loan: Loan): boolean {
   );
 }
 
-// --- QR Modal ---
+// --- QR Modal (loan-specific data fetching) ---
 
 type QrModalState = { loanId: string; type: 'send' | 'return'; dataUrl?: string } | null;
 
-function QrModal({ state, onClose }: { state: QrModalState; onClose: () => void }) {
+function LoanQrModal({ state, onClose }: { state: QrModalState; onClose: () => void }) {
   const { t } = useTranslation();
 
   const { data, isLoading } = useQuery({
@@ -62,27 +59,15 @@ function QrModal({ state, onClose }: { state: QrModalState; onClose: () => void 
     : t('loans.qrModal.returnTitle');
 
   return (
-    <Modal visible={!!state} transparent animationType="fade" onRequestClose={onClose}>
-      <View className="flex-1 bg-black/80 items-center justify-center px-6">
-        <View className="bg-surface-variant rounded-2xl p-6 w-full items-center gap-4">
-          <Text className="text-foreground font-sans-bold text-lg">{title}</Text>
-          <Text className="text-on-surface-muted font-sans text-xs text-center">
-            {t('loans.qrModal.instruction')}
-          </Text>
-          {isLoading && <ActivityIndicator color="#4d7c6f" />}
-          {qrUrl && (
-            <Image source={{ uri: qrUrl }} style={{ width: 220, height: 220 }} resizeMode="contain" />
-          )}
-          <TouchableOpacity
-            className="bg-primary rounded-xl px-6 py-3 w-full items-center mt-2"
-            activeOpacity={0.8}
-            onPress={onClose}
-          >
-            <Text className="text-white font-sans-semibold">{t('loans.qrModal.close')}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
+    <QrDisplayModal
+      visible={!!state}
+      title={title}
+      instruction={t('loans.qrModal.instruction')}
+      closeLabel={t('loans.qrModal.close')}
+      qrUrl={qrUrl}
+      isLoading={isLoading}
+      onClose={onClose}
+    />
   );
 }
 
@@ -131,7 +116,7 @@ function LoanCard({
           className="font-sans text-xs"
           style={{ color: overdue ? '#ef4444' : '#64748b' }}
         >
-          {overdue ? t('loans.overdue') : t('loans.dueDate', { date: formatDate(loan.dueDate) })}
+          {overdue ? t('loans.overdue') : t('loans.dueDate', { date: formatShortDate(loan.dueDate) })}
         </Text>
       </View>
 
@@ -253,23 +238,12 @@ export default function LoansScreen() {
         <Text className="text-foreground font-sans-bold text-2xl">{t('loans.title')}</Text>
       </View>
 
-      {/* Filter tabs */}
-      <View className="flex-row px-5 mb-4 gap-2">
-        {FILTER_TABS.map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            onPress={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-full ${activeTab === tab ? 'bg-primary' : 'bg-surface-variant'}`}
-            activeOpacity={0.7}
-          >
-            <Text
-              className={`font-sans-semibold text-xs ${activeTab === tab ? 'text-white' : 'text-on-surface-muted'}`}
-            >
-              {t(`loans.tabs.${tab}`)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <FilterTabBar
+        tabs={FILTER_TABS}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        label={(tab) => t(`loans.tabs.${tab}`)}
+      />
 
       {isError && (
         <Text className="text-status-error font-sans text-sm text-center px-5 mb-4">
@@ -304,7 +278,7 @@ export default function LoansScreen() {
         contentContainerStyle={{ paddingBottom: 24 }}
       />
 
-      <QrModal state={qrModal} onClose={() => setQrModal(null)} />
+      <LoanQrModal state={qrModal} onClose={() => setQrModal(null)} />
     </View>
   );
 }

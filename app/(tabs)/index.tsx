@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser } from '@features/auth/store';
 import { inventoryApi } from '@features/inventory/api';
 import type { Transaction } from '@features/inventory/types';
+import { timeAgo } from '@/utils/format-date';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   ENTRADA:       '#10b981',
@@ -32,17 +33,7 @@ function ActivityRow({ tx }: { tx: Transaction }) {
   const sign = tx.type === 'ENTRADA' || tx.type === 'DEVOLUCION' ? '+' : '-';
   const signColor = sign === '+' ? '#10b981' : '#ef4444';
 
-  const diff = Date.now() - new Date(tx.createdAt).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  let ago: string;
-  if (minutes < 60) {
-    ago = t('dashboard.timeAgo.minutes', { count: minutes });
-  } else if (minutes < 1440) {
-    ago = t('dashboard.timeAgo.hours', { count: Math.floor(minutes / 60) });
-  } else {
-    ago = t('dashboard.timeAgo.days', { count: Math.floor(minutes / 1440) });
-  }
-
+  const ago = timeAgo(tx.createdAt, t);
   const typeName = t(`dashboard.txTypes.${tx.type}`, { defaultValue: tx.type });
 
   return (
