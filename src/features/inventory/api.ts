@@ -1,6 +1,6 @@
 import { apiFetch } from '@features/auth/client';
 import { API_ENDPOINTS } from '@constants/api';
-import { RawInventoryStatsSchema, RawTransactionListSchema } from './schemas';
+import { InventoryItemsListSchema, RawInventoryStatsSchema, RawTransactionSchema } from './schemas';
 import type { InventoryItem, InventoryStats, Transaction } from './types';
 
 // Maps transaction type names from the API to dashboard display keys
@@ -20,7 +20,9 @@ export const inventoryApi = {
         totalItems: raw.total,
         lowStockCount: raw.lowStock,
         activeLoans: raw.inUse,
-        pendingTransfers: raw.outOfStock, // best available proxy; replace if a dedicated endpoint is added
+        // TODO: replace with a dedicated /api/transfer-requests/stats?status=PENDING endpoint.
+        // outOfStock is NOT a valid proxy for pending transfers — omit the metric until real data is available.
+        pendingTransfers: undefined,
       };
     }),
 
@@ -29,12 +31,12 @@ export const inventoryApi = {
     if (params?.search) query.set('search', params.search);
     if (params?.warehouseId) query.set('warehouseId', params.warehouseId);
     const qs = query.toString();
-    return apiFetch<{ data: InventoryItem[] }>(`${API_ENDPOINTS.inventory}${qs ? `?${qs}` : ''}`);
+    return apiFetch<unknown>(`${API_ENDPOINTS.inventory}${qs ? `?${qs}` : ''}`).then(InventoryItemsListSchema.parse);
   },
 
   getRecentTransactions: (): Promise<Transaction[]> =>
     apiFetch<unknown>(`${API_ENDPOINTS.transactions}/recent?limit=5`).then((data) => {
-      const rows = RawTransactionListSchema.parse(data);
+      const rows = RawTransactionSchema.array().parse(data);
       return rows.map((tx) => ({
         id: tx.id,
         type: TX_TYPE_MAP[tx.type] ?? tx.type,

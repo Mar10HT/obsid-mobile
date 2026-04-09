@@ -131,6 +131,7 @@ export default function MoreScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const initials = user?.name
     ? user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
@@ -175,10 +176,17 @@ export default function MoreScreen() {
       <View className="mt-auto mb-8">
         <TouchableOpacity
           className="border border-error-border rounded-card px-4 py-4 items-center"
-          onPress={logout}
+          onPress={async () => {
+            if (isLoggingOut) return;
+            setIsLoggingOut(true);
+            await logout();
+          }}
           activeOpacity={0.7}
+          disabled={isLoggingOut}
         >
-          <Text className="text-error font-sans-medium">{t('more.logout')}</Text>
+          <Text className="text-error font-sans-medium">
+            {isLoggingOut ? t('common.loading') : t('more.logout')}
+          </Text>
         </TouchableOpacity>
       </View>
 

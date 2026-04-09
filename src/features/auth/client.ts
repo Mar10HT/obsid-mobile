@@ -1,6 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import { API_BASE_URL, API_ENDPOINTS } from '@constants/api';
 import { secureStore } from './secure-store';
+import { AuthTokensSchema } from './schemas';
 
 // Shared refresh promise — prevents multiple concurrent refresh calls
 let refreshPromise: Promise<string> | null = null;
@@ -10,6 +11,11 @@ let onAuthFailure: (() => void) | null = null;
 
 export function setAuthFailureCallback(cb: () => void): void {
   onAuthFailure = cb;
+}
+
+// Only for use in tests — resets module-level refresh promise between test runs
+export function __resetRefreshPromise(): void {
+  refreshPromise = null;
 }
 
 function isTokenExpired(token: string): boolean {
@@ -34,7 +40,8 @@ async function doRefresh(): Promise<string> {
 
   if (!res.ok) throw new Error('Refresh failed');
 
-  const data = await res.json();
+  const raw = await res.json();
+  const data = AuthTokensSchema.parse(raw);
   await secureStore.setTokens(data.access_token, data.refresh_token);
   return data.access_token;
 }

@@ -16,7 +16,8 @@ export interface InventoryStats {
   totalItems: number;
   lowStockCount: number;
   activeLoans: number;
-  pendingTransfers: number;
+  // Optional: only populated when a dedicated stats endpoint is available.
+  pendingTransfers?: number;
 }
 
 export interface Transaction {

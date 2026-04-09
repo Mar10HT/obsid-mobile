@@ -21,6 +21,7 @@
       "activeLoans": "Préstamos Activos",
       "pending": "Pendientes"
     },
+    "noWarehouse": "Sin bodega",
     "quickActions": "Acciones Rápidas",
     "scanQr": "Escanear QR",
     "movement": "Movimiento",

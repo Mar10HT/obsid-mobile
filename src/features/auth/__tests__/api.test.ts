@@ -22,6 +22,7 @@ jest.mock('../secure-store', () => ({
 jest.mock('../client', () => ({
   apiFetch: jest.fn(),
   setAuthFailureCallback: jest.fn(),
+  __resetRefreshPromise: jest.fn(),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ApiError: class MockApiError extends Error {
     status: number;
@@ -34,7 +35,7 @@ jest.mock('../client', () => ({
 }));
 
 // Import after mocks so the module picks up the mock implementations
-import { apiFetch } from '../client';
+import { apiFetch, __resetRefreshPromise } from '../client';
 
 const mockApiFetch = apiFetch as jest.MockedFunction<typeof apiFetch>;
 const mockSecureStore = secureStore as jest.Mocked<typeof secureStore>;
@@ -54,15 +55,23 @@ describe('authApi', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    __resetRefreshPromise();
+  });
+
   describe('login', () => {
     const credentials = { email: 'mario@test.com', password: 'secret' };
 
     it('stores tokens and returns user profile on success', async () => {
+      // Use JWT-shaped tokens (header.payload.signature) to satisfy AuthTokensSchema validation
+      const mockAccessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyLTEifQ.mockSignatureAccess';
+      const mockRefreshToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyLTEifQ.mockSignatureRefresh';
+
       const mockFetch = jest.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          access_token: 'access-abc',
-          refresh_token: 'refresh-xyz',
+          access_token: mockAccessToken,
+          refresh_token: mockRefreshToken,
           user: {},
         }),
       } as Response);
@@ -76,7 +85,7 @@ describe('authApi', () => {
 
       const result = await authApi.login(credentials);
 
-      expect(mockSecureStore.setTokens).toHaveBeenCalledWith('access-abc', 'refresh-xyz');
+      expect(mockSecureStore.setTokens).toHaveBeenCalledWith(mockAccessToken, mockRefreshToken);
       expect(result.email).toBe(MOCK_USER.email);
       expect(result.permissions).toEqual(MOCK_USER.permissions);
 

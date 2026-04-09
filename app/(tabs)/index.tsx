@@ -90,7 +90,9 @@ export default function DashboardScreen() {
           <Text className="text-foreground font-sans-bold text-2xl">{user?.name ?? '—'}</Text>
         </View>
         <View className="bg-surface-variant rounded-full px-3 py-1.5">
-          <Text className="text-on-surface-muted font-sans text-xs">Bodega Central</Text>
+          <Text className="text-on-surface-muted font-sans text-xs">
+            {t('dashboard.noWarehouse')}
+          </Text>
         </View>
       </View>
 
@@ -101,7 +103,10 @@ export default function DashboardScreen() {
       </View>
       <View className="px-5 flex-row gap-3">
         <StatCard label={t('dashboard.stats.activeLoans')} value={stats?.activeLoans ?? '—'} color="#3b82f6" />
-        <StatCard label={t('dashboard.stats.pending')} value={stats?.pendingTransfers ?? '—'} />
+        {/* Pending transfers card is only shown when a real value is available from the API */}
+        {stats?.pendingTransfers !== undefined && (
+          <StatCard label={t('dashboard.stats.pending')} value={stats.pendingTransfers} />
+        )}
       </View>
 
       {/* Quick actions */}

@@ -29,7 +29,8 @@ interface PageResponse {
   meta: { total: number; page: number; limit: number; totalPages: number };
 }
 
-function fetchPage(page: number): Promise<PageResponse> {
+function fetchPage(pageParam: unknown): Promise<PageResponse> {
+  const page = typeof pageParam === 'number' ? pageParam : 1;
   return apiFetch<PageResponse>(`${API_ENDPOINTS.transactions}?page=${page}&limit=20`);
 }
 
@@ -74,10 +75,10 @@ export default function TransactionsScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
-  const { data, isError, isFetchingNextPage, fetchNextPage, hasNextPage, refetch, isFetching } =
+  const { data, isError, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, refetch, isFetching } =
     useInfiniteQuery({
       queryKey: ['transactions-history'],
-      queryFn: ({ pageParam }) => fetchPage(pageParam as number),
+      queryFn: ({ pageParam }) => fetchPage(pageParam),
       initialPageParam: 1,
       getNextPageParam: (last) =>
         last.meta.page < last.meta.totalPages ? last.meta.page + 1 : undefined,
@@ -122,11 +123,13 @@ export default function TransactionsScreen() {
         }}
         onEndReachedThreshold={0.3}
         ListEmptyComponent={
-          <View className="items-center py-12">
-            <Text className="text-on-surface-muted font-sans text-sm">
-              {t('transactions.empty')}
-            </Text>
-          </View>
+          !isLoading ? (
+            <View className="items-center py-12">
+              <Text className="text-on-surface-muted font-sans text-sm">
+                {t('transactions.empty')}
+              </Text>
+            </View>
+          ) : null
         }
         ListFooterComponent={
           isFetchingNextPage ? (

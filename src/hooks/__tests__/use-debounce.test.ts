@@ -1,6 +1,8 @@
 import { renderHook, act } from '@testing-library/react-native';
 import { useDebounce } from '../use-debounce';
 
+type DebounceProps<T> = { value: T; delay: number };
+
 jest.useFakeTimers();
 
 describe('useDebounce', () => {
@@ -15,19 +17,19 @@ describe('useDebounce', () => {
 
   it('does not update value before the delay has elapsed', () => {
     const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
+      ({ value, delay }: DebounceProps<string>) => useDebounce(value, delay),
       { initialProps: { value: 'first', delay: 300 } },
     );
 
     rerender({ value: 'second', delay: 300 });
-    jest.advanceTimersByTime(200);
+    act(() => { jest.advanceTimersByTime(200); });
 
     expect(result.current).toBe('first');
   });
 
   it('updates to the new value after the delay has elapsed', () => {
     const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
+      ({ value, delay }: DebounceProps<string>) => useDebounce(value, delay),
       { initialProps: { value: 'first', delay: 300 } },
     );
 
@@ -42,7 +44,7 @@ describe('useDebounce', () => {
 
   it('resets the timer on rapid successive updates', () => {
     const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
+      ({ value, delay }: DebounceProps<string>) => useDebounce(value, delay),
       { initialProps: { value: 'a', delay: 300 } },
     );
 
@@ -64,7 +66,7 @@ describe('useDebounce', () => {
 
   it('works with number values', () => {
     const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
+      ({ value, delay }: DebounceProps<number>) => useDebounce(value, delay),
       { initialProps: { value: 0, delay: 500 } },
     );
 

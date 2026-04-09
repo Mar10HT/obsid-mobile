@@ -7,6 +7,8 @@ import { z } from 'zod';
 const LoanWithQrSchema = LoanSchema.extend({ qrCodeDataUrl: z.string() });
 type LoanWithQr = z.infer<typeof LoanWithQrSchema>;
 
+const QrResponseSchema = z.object({ qrCodeDataUrl: z.string() });
+
 export const loansApi = {
   getList: (status?: LoanStatus): Promise<LoansListResponse> => {
     const qs = status ? `?status=${status}` : '';
@@ -19,8 +21,8 @@ export const loansApi = {
   send: (id: string): Promise<LoanWithQr> =>
     apiFetch<unknown>(`${API_ENDPOINTS.loans}/${id}/send`, { method: 'PATCH' }).then(LoanWithQrSchema.parse),
 
-  getQr: (id: string, type: 'send' | 'return'): Promise<{ qrDataUrl: string }> =>
-    apiFetch<{ qrDataUrl: string }>(`${API_ENDPOINTS.loans}/${id}/qr/${type}`),
+  getQr: (id: string, type: 'send' | 'return'): Promise<{ qrCodeDataUrl: string }> =>
+    apiFetch<unknown>(`${API_ENDPOINTS.loans}/${id}/qr/${type}`).then(QrResponseSchema.parse),
 
   initiateReturn: (id: string): Promise<LoanWithQr> =>
     apiFetch<unknown>(`${API_ENDPOINTS.loans}/${id}/initiate-return`, { method: 'PATCH' }).then(LoanWithQrSchema.parse),

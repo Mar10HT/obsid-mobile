@@ -165,7 +165,7 @@ export default function TransfersScreen() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<FilterTab>('PENDING');
   const [qrTransferId, setQrTransferId] = useState<string | null>(null);
-  const [actioningId, setActioningId] = useState<string | null>(null);
+  const [actioningIds, setActioningIds] = useState<Set<string>>(new Set());
 
   const { data, isLoading, isError, isFetching, refetch } = useQuery({
     queryKey: ['transfers', activeTab],
@@ -178,27 +178,30 @@ export default function TransfersScreen() {
 
   const approveMutation = useMutation({
     mutationFn: (id: string) => transfersApi.approve(id),
-    onMutate: (id) => setActioningId(id),
-    onSuccess: () => { invalidate(); setActioningId(null); },
-    onError: (err) => {
-      setActioningId(null);
+    onMutate: (id) => setActioningIds((prev) => new Set([...prev, id])),
+    onSuccess: (_, id) => {
+      invalidate();
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
+    },
+    onError: (err, id) => {
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       Alert.alert(t('transfers.actionError'), err instanceof Error ? err.message : '');
     },
   });
 
   const sendMutation = useMutation({
     mutationFn: (id: string) => transfersApi.send(id),
-    onMutate: (id) => setActioningId(id),
-    onSuccess: (result) => {
+    onMutate: (id) => setActioningIds((prev) => new Set([...prev, id])),
+    onSuccess: (result, id) => {
       invalidate();
-      setActioningId(null);
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       // Show QR immediately after sending
       if (result.qrCodeDataUrl) {
         setQrTransferId(result.id);
       }
     },
-    onError: (err) => {
-      setActioningId(null);
+    onError: (err, id) => {
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       Alert.alert(t('transfers.actionError'), err instanceof Error ? err.message : '');
     },
   });
@@ -234,7 +237,7 @@ export default function TransfersScreen() {
             onApprove={(id) => approveMutation.mutate(id)}
             onSend={(id) => sendMutation.mutate(id)}
             onViewQr={(id) => setQrTransferId(id)}
-            isActioning={actioningId === item.id}
+            isActioning={actioningIds.has(item.id)}
           />
         )}
         refreshControl={

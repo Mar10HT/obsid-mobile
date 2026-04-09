@@ -39,11 +39,12 @@ export const authApi = {
     return { ...res.user, permissions: res.permissions, permissionsVersion: res.permissionsVersion };
   },
 
+  // Backend returns 204 No Content; treat any 2xx as success
   changePassword: (currentPassword: string, newPassword: string): Promise<void> =>
-    apiFetch(API_ENDPOINTS.changePassword, {
+    apiFetch<void>(API_ENDPOINTS.changePassword, {
       method: 'POST',
       body: JSON.stringify({ currentPassword, newPassword }),
-    }),
+    }).then(() => undefined), // normalize any response to void
 
   // Passing null clears the stored token — backend accepts `{ token: null }` to unregister
   clearPushToken: (): Promise<void> =>

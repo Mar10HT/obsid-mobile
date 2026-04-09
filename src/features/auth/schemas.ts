@@ -1,8 +1,13 @@
 import { z } from 'zod';
 
+const jwtString = z.string().min(20).regex(
+  /^[\w+/=-]+\.[\w+/=-]+\.[\w+/=-]*$/,
+  'Invalid JWT format'
+);
+
 export const AuthTokensSchema = z.object({
-  access_token: z.string().min(1),
-  refresh_token: z.string().min(1),
+  access_token: jwtString,
+  refresh_token: jwtString,
 });
 
 export const AuthUserSchema = z.object({

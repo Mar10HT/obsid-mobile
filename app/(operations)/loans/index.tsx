@@ -53,7 +53,7 @@ function LoanQrModal({ state, onClose }: { state: QrModalState; onClose: () => v
     enabled: !!state && !state.dataUrl,
   });
 
-  const qrUrl = state?.dataUrl ?? data?.qrDataUrl;
+  const qrUrl = state?.dataUrl ?? data?.qrCodeDataUrl;
   const title = state?.type === 'send'
     ? t('loans.qrModal.sendTitle')
     : t('loans.qrModal.returnTitle');
@@ -184,7 +184,7 @@ export default function LoansScreen() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<LoanFilterTab>('PENDING');
   const [qrModal, setQrModal] = useState<{ loanId: string; type: 'send' | 'return'; dataUrl?: string } | null>(null);
-  const [actioningId, setActioningId] = useState<string | null>(null);
+  const [actioningIds, setActioningIds] = useState<Set<string>>(new Set());
 
   const { data, isLoading, isError, isFetching, refetch } = useQuery({
     queryKey: ['loans', activeTab],
@@ -200,32 +200,32 @@ export default function LoansScreen() {
 
   const sendMutation = useMutation({
     mutationFn: (id: string) => loansApi.send(id),
-    onMutate: (id) => setActioningId(id),
-    onSuccess: (result) => {
+    onMutate: (id) => setActioningIds((prev) => new Set([...prev, id])),
+    onSuccess: (result, id) => {
       invalidate();
-      setActioningId(null);
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       if (result.qrCodeDataUrl) {
         setQrModal({ loanId: result.id, type: 'send', dataUrl: result.qrCodeDataUrl });
       }
     },
-    onError: (err) => {
-      setActioningId(null);
+    onError: (err, id) => {
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       Alert.alert(t('loans.actionError'), err instanceof Error ? err.message : '');
     },
   });
 
   const returnMutation = useMutation({
     mutationFn: (id: string) => loansApi.initiateReturn(id),
-    onMutate: (id) => setActioningId(id),
-    onSuccess: (result) => {
+    onMutate: (id) => setActioningIds((prev) => new Set([...prev, id])),
+    onSuccess: (result, id) => {
       invalidate();
-      setActioningId(null);
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       if (result.qrCodeDataUrl) {
         setQrModal({ loanId: result.id, type: 'return', dataUrl: result.qrCodeDataUrl });
       }
     },
-    onError: (err) => {
-      setActioningId(null);
+    onError: (err, id) => {
+      setActioningIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
       Alert.alert(t('loans.actionError'), err instanceof Error ? err.message : '');
     },
   });
@@ -261,7 +261,7 @@ export default function LoansScreen() {
             onViewSendQr={(id) => setQrModal({ loanId: id, type: 'send' })}
             onInitiateReturn={(id) => returnMutation.mutate(id)}
             onViewReturnQr={(id) => setQrModal({ loanId: id, type: 'return' })}
-            isActioning={actioningId === item.id}
+            isActioning={actioningIds.has(item.id)}
           />
         )}
         refreshControl={

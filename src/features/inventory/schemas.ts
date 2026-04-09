@@ -1,5 +1,29 @@
 import { z } from 'zod';
 
+export const InventoryItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  sku: z.string(),
+  quantity: z.number(),
+  minStock: z.number(),
+  warehouseId: z.string(),
+  warehouseName: z.string(),
+  categoryName: z.string().optional(),
+  expiryDate: z.string().nullable().optional(),
+});
+
+export const PaginationMetaSchema = z.object({
+  total: z.number(),
+  page: z.number(),
+  limit: z.number(),
+  totalPages: z.number(),
+});
+
+export const InventoryItemsListSchema = z.object({
+  data: z.array(InventoryItemSchema),
+  meta: PaginationMetaSchema.optional(),
+});
+
 export const RawInventoryStatsSchema = z.object({
   total: z.number(),
   inStock: z.number(),
@@ -12,7 +36,7 @@ export const RawInventoryStatsSchema = z.object({
 });
 
 export const RawTransactionItemSchema = z.object({
-  inventoryItem: z.object({ name: z.string() }),
+  inventoryItem: z.object({ name: z.string() }).nullable().optional(),
   quantity: z.number(),
 });
 
@@ -27,7 +51,11 @@ export const RawTransactionSchema = z.object({
   user: z.object({ name: z.string().optional(), email: z.string() }).optional(),
 });
 
-export const RawTransactionListSchema = z.array(RawTransactionSchema);
+export const RawTransactionListSchema = z.object({
+  data: z.array(RawTransactionSchema),
+  meta: PaginationMetaSchema,
+});
 
 export type RawInventoryStats = z.infer<typeof RawInventoryStatsSchema>;
 export type RawTransaction = z.infer<typeof RawTransactionSchema>;
+export type PaginationMeta = z.infer<typeof PaginationMetaSchema>;
