@@ -201,8 +201,7 @@ export default function InventoryScreen() {
 
   const handleEdit = (item: InventoryItem) => {
     setMenuItem(null);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    router.push({ pathname: '/(operations)/inventory/[id]/edit' as any, params: { id: item.id } });
+    router.push({ pathname: '/(operations)/inventory/[id]/edit', params: { id: item.id } });
   };
 
   return (
@@ -266,8 +265,7 @@ export default function InventoryScreen() {
             className="absolute right-5 bg-primary rounded-full w-14 h-14 items-center justify-center shadow-lg"
             style={{ bottom: insets.bottom + 20, elevation: 6 }}
             activeOpacity={0.85}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onPress={() => router.push({ pathname: '/(operations)/inventory/new' as any })}
+            onPress={() => router.push({ pathname: '/(operations)/inventory/new' })}
           >
             <Text className="text-white text-3xl leading-8">+</Text>
           </TouchableOpacity>
