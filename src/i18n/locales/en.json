@@ -56,6 +56,49 @@
       "inStock": "In stock",
       "lowStock": "Low stock",
       "noStock": "Out of stock"
+    },
+    "actions": {
+      "new": "New item",
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewDetails": "View details"
+    },
+    "form": {
+      "createTitle": "New item",
+      "editTitle": "Edit item",
+      "name": "Name",
+      "namePlaceholder": "Item name",
+      "description": "Description",
+      "descriptionPlaceholder": "Optional",
+      "sku": "SKU",
+      "barcode": "Barcode",
+      "category": "Category",
+      "warehouse": "Warehouse",
+      "supplier": "Supplier",
+      "quantity": "Quantity",
+      "minQuantity": "Min.",
+      "price": "Price",
+      "expirationDate": "Expiration date",
+      "dateHint": "YYYY-MM-DD",
+      "create": "Create",
+      "save": "Save",
+      "selectOption": "Select",
+      "search": "Search",
+      "noOptions": "No options"
+    },
+    "messages": {
+      "createSuccess": "Item created",
+      "updateSuccess": "Item updated",
+      "deleteSuccess": "Item deleted",
+      "createError": "Failed to create item",
+      "updateError": "Failed to update item",
+      "deleteError": "Failed to delete item"
+    },
+    "deleteConfirm": {
+      "title": "Delete item",
+      "message": "Are you sure you want to delete this item? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
     }
   },
   "operations": {
@@ -254,6 +297,9 @@
     "loadError": "Failed to load alerts"
   },
   "common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save"
   }
 }

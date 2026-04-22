@@ -38,6 +38,12 @@ export const API_ENDPOINTS = {
   // Warehouses
   warehouses: '/api/warehouses',
 
+  // Categories
+  categories: '/api/categories',
+
+  // Suppliers
+  suppliers: '/api/suppliers',
+
   // Transfers
   transfers: '/api/transfer-requests',
   transferScanQr: '/api/transfer-requests/scan-qr',

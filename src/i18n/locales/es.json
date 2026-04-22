@@ -56,6 +56,49 @@
       "inStock": "En stock",
       "lowStock": "Stock bajo",
       "noStock": "Sin stock"
+    },
+    "actions": {
+      "new": "Nuevo ítem",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "viewDetails": "Ver detalles"
+    },
+    "form": {
+      "createTitle": "Nuevo ítem",
+      "editTitle": "Editar ítem",
+      "name": "Nombre",
+      "namePlaceholder": "Nombre del ítem",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Opcional",
+      "sku": "SKU",
+      "barcode": "Código de barras",
+      "category": "Categoría",
+      "warehouse": "Bodega",
+      "supplier": "Proveedor",
+      "quantity": "Cantidad",
+      "minQuantity": "Mín.",
+      "price": "Precio",
+      "expirationDate": "Vencimiento",
+      "dateHint": "AAAA-MM-DD",
+      "create": "Crear",
+      "save": "Guardar",
+      "selectOption": "Seleccionar",
+      "search": "Buscar",
+      "noOptions": "Sin opciones"
+    },
+    "messages": {
+      "createSuccess": "Ítem creado",
+      "updateSuccess": "Ítem actualizado",
+      "deleteSuccess": "Ítem eliminado",
+      "createError": "No se pudo crear el ítem",
+      "updateError": "No se pudo actualizar el ítem",
+      "deleteError": "No se pudo eliminar el ítem"
+    },
+    "deleteConfirm": {
+      "title": "Eliminar ítem",
+      "message": "¿Seguro que querés eliminar este ítem? Esta acción no se puede deshacer.",
+      "confirm": "Eliminar",
+      "cancel": "Cancelar"
     }
   },
   "operations": {
@@ -254,6 +297,9 @@
     "loadError": "Error al cargar alertas"
   },
   "common": {
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "save": "Guardar"
   }
 }

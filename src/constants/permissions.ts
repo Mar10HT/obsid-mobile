@@ -1,12 +1,20 @@
 // Permission keys — mirrors Inv-App-API role permissions
 export const PERMISSIONS = {
-  // Inventory
+  // Inventory (granular, match backend @Permissions decorators)
   INVENTORY_VIEW: 'inventory:view',
-  INVENTORY_MANAGE: 'inventory:manage',
+  INVENTORY_CREATE: 'inventory:create',
+  INVENTORY_EDIT: 'inventory:edit',
+  INVENTORY_DELETE: 'inventory:delete',
 
-  // Warehouses
-  WAREHOUSES_VIEW: 'warehouses:view',
-  WAREHOUSES_MANAGE: 'warehouses:manage',
+  // Warehouses (backend uses singular "warehouse:...")
+  WAREHOUSE_VIEW: 'warehouse:view',
+  WAREHOUSE_MANAGE: 'warehouse:manage',
+
+  // Categories
+  CATEGORIES_VIEW: 'categories:view',
+
+  // Suppliers
+  SUPPLIERS_VIEW: 'suppliers:view',
 
   // Transfers
   TRANSFERS_CREATE: 'transfers:create',
